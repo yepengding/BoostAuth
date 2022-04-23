@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/boostauth
+    username: root
+    password: root
+
+webserver:
+  url: http://localhost:8080
+
+socketserver:
+  url: http://localhost:9010
