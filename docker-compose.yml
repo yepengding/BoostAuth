@@ -1,0 +1,30 @@
+version: '3'
+services:
+  web-auth:
+    container_name: boostauth
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /auth
+    volumes:
+      - maven-repo:/root/.m2
+    ports:
+      - '9000:9000'
+    depends_on:
+      - mysql-auth
+    command: mvn clean spring-boot:run -Dspring-boot.run.profiles=prod
+
+  mysql-auth:
+    container_name: boostauth-mysql
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: boostauth
+      MYSQL_ROOT_PASSWORD: boostauth
+      MYSQL_ROOT_HOST: '%'
+    ports:
+      - '9001:3306'
+    restart: always
+    command: mysqld --lower_case_table_names=1 --skip-ssl --character_set_server=utf8mb4 --explicit_defaults_for_timestamp
+
+volumes:
+  maven-repo:

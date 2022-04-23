@@ -6,10 +6,20 @@ Authentication system for **Boost Plan**. The Boost Plan is a scaffold for build
 
 ### Environment
 
-- Java 17
+- Java 11
 - Maven 3.6+
 
-### Start with Maven Compile
+### Configuration
+
+> src/main/resources/application[-dev/-local/-prod].yml
+
+### Start with Docker
+
+```shell
+docker-compose up
+```
+
+### Start with Maven
 
 ```shell
 mvn clean package -D maven.test.skip=true -P [local/dev/prod]
