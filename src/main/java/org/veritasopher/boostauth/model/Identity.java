@@ -7,7 +7,6 @@ import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.veritasopher.boostauth.core.dictionary.StatusCode;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -50,7 +49,7 @@ public class Identity {
     @LastModifiedDate
     private Date updateDate;
 
-    @Column(name = "status", columnDefinition = "integer default " + StatusCode.NORMAL)
+    @Column(name = "status")
     private int status;
 
     @OneToOne(cascade = CascadeType.ALL)

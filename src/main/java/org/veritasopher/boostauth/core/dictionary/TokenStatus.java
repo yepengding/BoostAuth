@@ -9,7 +9,7 @@ import lombok.Getter;
  */
 public enum TokenStatus {
 
-    NORMAL(0), INVALID(1);
+    NORMAL(1), INVALID(-1);
 
     @Getter
     private final int value;

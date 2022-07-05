@@ -40,6 +40,10 @@ domain:9000/swagger-ui.html
 4. */verify* Verify a token
 5. */auth/logout* Sign out
 
+## Frontend
+
+- Management: `/view/manage`
+
 ---
 
 # References
