@@ -9,7 +9,7 @@ import org.veritasopher.boostauth.core.dictionary.ResponseCode;
  */
 public class SystemException extends BaseException {
 
-    private int code = ResponseCode.FAILURE;
+    private int code = ResponseCode.FAILURE.getValue();
 
     public SystemException(String message) {
         super(message);

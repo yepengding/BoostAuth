@@ -3,6 +3,11 @@ package org.veritasopher.boostauth.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.veritasopher.boostauth.model.Identity;
 
+/**
+ * Identity Repository
+ *
+ * @author Yepeng Ding
+ */
 public interface IdentityRepository extends JpaRepository<Identity, Long> {
     Identity findByUsername(String username);
 

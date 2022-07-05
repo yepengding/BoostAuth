@@ -9,6 +9,11 @@ import org.veritasopher.boostauth.core.dictionary.StatusCode;
 import javax.persistence.*;
 import java.util.Date;
 
+/**
+ * Token Entity
+ *
+ * @author Yepeng Ding
+ */
 @Entity
 @Table(name = "auth_token")
 @Getter

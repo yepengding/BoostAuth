@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.veritasopher.boostauth.config.GlobalKey;
-import org.veritasopher.boostauth.core.dictionary.TokenConst;
+import org.veritasopher.boostauth.core.dictionary.TokenStatus;
 import org.veritasopher.boostauth.core.exception.Assert;
 import org.veritasopher.boostauth.core.response.Response;
 import org.veritasopher.boostauth.model.Identity;
@@ -48,7 +48,7 @@ public class VerifyController {
         Algorithm algorithm = Algorithm.HMAC512(GlobalKey.JWT_SIGNING_KEY);
         JWTVerifier verifier = JWT.require(algorithm)
                 .withIssuer(GlobalKey.ISSUER)
-                .build(); //Reusable verifier instance
+                .build();
         DecodedJWT jwt = verifier.verify(token);
 
         // Expiration
@@ -58,7 +58,7 @@ public class VerifyController {
         // Corresponding Identity does not exist
         Assert.notNull(identity, "Token is invalid");
 
-        Assert.isTrue(identity.getToken().getContent().equals(authVerify.getToken()) && identity.getToken().getStatus() == TokenConst.NORMAL, "Token is abnormal.");
+        Assert.isTrue(identity.getToken().getContent().equals(authVerify.getToken()) && TokenStatus.NORMAL.isTrue(identity.getToken().getStatus()), "Token is abnormal.");
 
         return Response.success("Verified.", identity.getUuid());
     }

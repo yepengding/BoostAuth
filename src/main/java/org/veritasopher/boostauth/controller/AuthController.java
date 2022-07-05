@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.veritasopher.boostauth.config.GlobalKey;
 import org.veritasopher.boostauth.core.dictionary.ErrorCode;
-import org.veritasopher.boostauth.core.dictionary.IdentityConst;
-import org.veritasopher.boostauth.core.dictionary.TokenConst;
+import org.veritasopher.boostauth.core.dictionary.IdentityStatus;
+import org.veritasopher.boostauth.core.dictionary.TokenStatus;
 import org.veritasopher.boostauth.core.exception.Assert;
 import org.veritasopher.boostauth.core.response.Response;
 import org.veritasopher.boostauth.model.Identity;
@@ -55,7 +55,7 @@ public class AuthController {
     public Response<String> login(@RequestBody AuthLogin authLogin) {
         Identity identity = identityService.findByUsernameAndSource(authLogin.getUsername(), authLogin.getSource());
         Assert.notNull(identity, ErrorCode.USERNAME_NOT_EXIST, "Username does not exist.");
-        Assert.isTrue(identity.getStatus() == IdentityConst.NORMAL, ErrorCode.ABNORMAL, "Account is not normal.");
+        Assert.isTrue(IdentityStatus.NORMAL.isTrue(identity.getStatus()), ErrorCode.ABNORMAL, "Account is not normal.");
         Assert.isTrue(bCryptPasswordEncoder.matches(authLogin.getPassword(), identity.getPassword()), ErrorCode.PASSWORD_WRONG, "Wrong password.");
 
         // Generate and set token
@@ -76,7 +76,7 @@ public class AuthController {
                 .withSubject(identity.getUuid())
                 .withExpiresAt(expiryDate)
                 .sign(algorithm));
-        token.setStatus(TokenConst.NORMAL);
+        token.setStatus(TokenStatus.NORMAL.getValue());
         tokenService.update(token);
         return Response.success("Login successfully.", token.getContent());
     }
@@ -91,20 +91,22 @@ public class AuthController {
      */
     @PostMapping("/preregister")
     public Response<String> preRegister(@RequestBody AuthPreregister authPreregister) {
+        Assert.isTrue(preregistrationValid(authPreregister), "Preregister is invalid.");
+
         Identity existIdentity = identityService.findByUsername(authPreregister.getUsername());
 
         // Whether is preregistered.
-        Assert.isTrue(existIdentity == null || existIdentity.getStatus() != IdentityConst.PREREGISTER, ErrorCode.USERNAME_EXIST, "Username exists.");
+        Assert.isTrue(existIdentity == null || IdentityStatus.PREREGISTER.isFalse(existIdentity.getStatus()), ErrorCode.USERNAME_EXIST, "Username exists.");
 
         Identity identity = new Identity();
         identity.setUuid(UUID.randomUUID().toString());
         identity.setUsername(authPreregister.getUsername());
         identity.setPassword(bCryptPasswordEncoder.encode(authPreregister.getPassword()));
         identity.setSource(authPreregister.getSource());
-        identity.setStatus(IdentityConst.PREREGISTER);
+        identity.setStatus(IdentityStatus.PREREGISTER.getValue());
 
         Token token = new Token();
-        token.setStatus(TokenConst.INVALID);
+        token.setStatus(TokenStatus.INVALID.getValue());
         tokenService.create(token);
 
         identity.setToken(token);
@@ -123,7 +125,7 @@ public class AuthController {
     public Response<String> register(@RequestBody AuthRegister authRegister) {
         Identity identity = identityService.findByUuid(authRegister.getUuid());
         Assert.notNull(identity, "Register failed because UUID is missing.");
-        identity.setStatus(IdentityConst.NORMAL);
+        identity.setStatus(IdentityStatus.NORMAL.getValue());
         identityService.update(identity);
         return Response.success("Register successfully.", identity.getUuid());
     }
@@ -139,8 +141,30 @@ public class AuthController {
         Identity identity = identityService.findByUuid(authLogout.getUuid());
         Assert.notNull(identity, ErrorCode.USERNAME_NOT_EXIST, "Username does not exist.");
         Token token = identity.getToken();
-        token.setStatus(TokenConst.INVALID);
+        token.setStatus(TokenStatus.INVALID.getValue());
         tokenService.update(token);
         return Response.success("Logout successfully.");
     }
+
+    /**
+     * Preregister information is valid
+     *
+     * @param authPreregister preregistration information
+     * @return true if valid. Otherwise, false.
+     */
+    private boolean preregistrationValid(AuthPreregister authPreregister) {
+        Assert.notNull(authPreregister.getUsername(), "Username should not be null.");
+        Assert.notNull(authPreregister.getPassword(), "Password should not be null.");
+        Assert.notNull(authPreregister.getSource(), "Source should not be null.");
+
+        Assert.isTrue(authPreregister.getUsername().length() >= 6 && authPreregister.getUsername().length() <= 16,
+                "Username length should be between 6 - 16.");
+        Assert.isTrue(authPreregister.getPassword().length() >= 6 && authPreregister.getPassword().length() <= 16,
+                "Password length should be between 6 - 16.");
+        Assert.isTrue(authPreregister.getSource().length() >= 1 && authPreregister.getSource().length() <= 55,
+                "Source length should be between 1 - 55.");
+
+        return true;
+    }
+
 }

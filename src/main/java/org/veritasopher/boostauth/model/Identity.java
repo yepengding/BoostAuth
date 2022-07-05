@@ -12,7 +12,11 @@ import org.veritasopher.boostauth.core.dictionary.StatusCode;
 import javax.persistence.*;
 import java.util.Date;
 
-
+/**
+ * Identity entity
+ *
+ * @author Yepeng Ding
+ */
 @Entity
 @Table(name = "auth_identity")
 @EntityListeners(AuditingEntityListener.class)

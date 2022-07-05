@@ -1,6 +1,20 @@
 package org.veritasopher.boostauth.core.dictionary;
 
-public interface ResponseCode {
-    int SUCCESS = 200;
-    int FAILURE = -1;
+import lombok.Getter;
+
+/**
+ * Response Code
+ *
+ * @author Yepeng Ding
+ */
+public enum ResponseCode {
+
+    SUCCESS(200), FAILURE(-1);
+
+    @Getter
+    private final int value;
+
+    ResponseCode(int value) {
+        this.value = value;
+    }
 }

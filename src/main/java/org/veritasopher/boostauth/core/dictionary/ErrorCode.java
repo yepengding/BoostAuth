@@ -1,5 +1,10 @@
 package org.veritasopher.boostauth.core.dictionary;
 
+/**
+ * Error Code
+ *
+ * @author Yepeng Ding
+ */
 public interface ErrorCode {
     int USERNAME_EXIST = 1000;
     int USERNAME_NOT_EXIST = 1001;

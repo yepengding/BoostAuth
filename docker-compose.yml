@@ -18,9 +18,13 @@ services:
     container_name: boostauth-mysql
     image: mysql:8.0
     environment:
-      MYSQL_DATABASE: boostauth
+      MYSQL_ROOT_USER: root
       MYSQL_ROOT_PASSWORD: boostauth
       MYSQL_ROOT_HOST: '%'
+      MYSQL_DATABASE: boostauth
+      MYSQL_USER: boostauthadmin
+      MYSQL_PASSWORD: boostauthadminpwd
+      TZ: Asia/Tokyo
     ports:
       - '9001:3306'
     restart: always

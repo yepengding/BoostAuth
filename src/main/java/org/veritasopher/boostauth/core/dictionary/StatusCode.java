@@ -1,5 +1,10 @@
 package org.veritasopher.boostauth.core.dictionary;
 
+/**
+ * Status Code
+ *
+ * @author Yepeng Ding
+ */
 public interface StatusCode {
     int NORMAL = 0;
 
