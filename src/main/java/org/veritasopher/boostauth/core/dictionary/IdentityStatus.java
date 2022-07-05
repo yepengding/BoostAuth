@@ -9,7 +9,7 @@ import lombok.Getter;
  */
 public enum IdentityStatus {
 
-    NORMAL(0), PREREGISTER(1);
+    PREREGISTER(0), NORMAL(1), DELETED(-1), REJECTED(-2);
 
     @Getter
     private final int value;

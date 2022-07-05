@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.veritasopher.boostauth.core.dictionary.StatusCode;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -35,7 +34,7 @@ public class Token {
     @Column(name = "expiry_date")
     private Date expiryDate;
 
-    @Column(name = "status", columnDefinition = "integer default " + StatusCode.NORMAL)
+    @Column(name = "status")
     private int status;
 
 }

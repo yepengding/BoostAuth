@@ -3,6 +3,8 @@ package org.veritasopher.boostauth.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.veritasopher.boostauth.model.Identity;
 
+import java.util.List;
+
 /**
  * Identity Repository
  *
@@ -14,4 +16,6 @@ public interface IdentityRepository extends JpaRepository<Identity, Long> {
     Identity findByUsernameAndSource(String username, String source);
 
     Identity findByUuid(String uuid);
+
+    List<Identity> findTop100ByStatusOrderByIdDesc(int status);
 }
