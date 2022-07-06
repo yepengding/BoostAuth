@@ -32,7 +32,7 @@ public class Identity {
     @Column(name = "uuid", unique = true)
     private String uuid;
 
-    @Column(name = "username", unique = true)
+    @Column(name = "username")
     private String username;
 
     @Column(name = "password")

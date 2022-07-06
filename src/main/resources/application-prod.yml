@@ -4,6 +4,11 @@ spring:
     username: boostauthadmin
     password: boostauthadminpwd
 
+logging:
+  file:
+    path: ./logs
+    name: boostauth.log
+
 webserver:
   url: http://web-service:8080
 

@@ -90,13 +90,13 @@ public class AuthController {
      * @return message, uuid
      */
     @PostMapping("/preregister")
-    public Response<String> preRegister(@RequestBody AuthPreregister authPreregister) {
+    public Response<String> preregister(@RequestBody AuthPreregister authPreregister) {
         Assert.isTrue(preregistrationValid(authPreregister), "Preregister is invalid.");
 
-        Identity existIdentity = identityService.findByUsername(authPreregister.getUsername());
+        Identity existIdentity = identityService.findByUsernameAndSource(authPreregister.getUsername(), authPreregister.getSource());
 
-        // Whether is preregistered.
-        Assert.isTrue(existIdentity == null || IdentityStatus.PREREGISTER.isFalse(existIdentity.getStatus()), ErrorCode.USERNAME_EXIST, "Username exists.");
+        // Check existence.
+        Assert.isNull(existIdentity, ErrorCode.USERNAME_EXIST, "Username exists.");
 
         Identity identity = new Identity();
         identity.setUuid(UUID.randomUUID().toString());
@@ -124,7 +124,7 @@ public class AuthController {
     @PostMapping("/register")
     public Response<String> register(@RequestBody AuthRegister authRegister) {
         Identity identity = identityService.findByUuid(authRegister.getUuid());
-        Assert.notNull(identity, "Register failed because UUID is missing.");
+        Assert.notNull(identity, "Register failed because identity does not exist.");
         identity.setStatus(IdentityStatus.NORMAL.getValue());
         identityService.update(identity);
         return Response.success("Register successfully.", identity.getUuid());

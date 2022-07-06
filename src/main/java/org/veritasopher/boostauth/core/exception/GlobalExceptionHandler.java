@@ -19,6 +19,12 @@ import org.veritasopher.boostauth.core.response.Response;
 public class GlobalExceptionHandler {
     private final static Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+    /**
+     * System Exception Handler
+     *
+     * @param e exception
+     * @return response
+     */
     @ResponseBody
     @ExceptionHandler(value = SystemException.class)
     public Response<String> systemExceptionHandler(SystemException e) {
@@ -26,24 +32,42 @@ public class GlobalExceptionHandler {
         return Response.failure(e.getCode(), e.getMessage());
     }
 
+    /**
+     * Expired Token Exception Handler
+     *
+     * @param e Expired Token exception
+     * @return response
+     */
     @ResponseBody
     @ExceptionHandler(value = TokenExpiredException.class)
-    public Response<String> expiredJwtExceptionHandler(TokenExpiredException e) {
+    public Response<String> expiredTokenExceptionHandler(TokenExpiredException e) {
         logger.error(e.getMessage());
         return Response.failure("Token has expired.");
     }
 
+    /**
+     * JWT Verification Exception Handler
+     *
+     * @param e JWT Verification exception
+     * @return response
+     */
     @ResponseBody
     @ExceptionHandler(value = JWTVerificationException.class)
-    public Response<String> expiredJwtExceptionHandler(JWTVerificationException e) {
+    public Response<String> jwtVerificationExceptionHandler(JWTVerificationException e) {
         logger.error(e.getMessage());
         return Response.failure("Token is invalid.");
     }
 
+    /**
+     * Runtime Exception Handler
+     *
+     * @param e runtime exception
+     * @return response
+     */
     @ResponseBody
     @ExceptionHandler(value = Exception.class)
     public Response<String> errorHandler(Exception e) {
-        logger.error(e.getMessage());
+        logger.error(e.getMessage(), e);
         return Response.failure("Internal Error.");
     }
 
