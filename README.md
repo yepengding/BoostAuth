@@ -4,8 +4,8 @@ Authentication system for **Boost Plan**. The **Boost Plan** is a scaffold for b
 time.
 
 BoostAuth provides a unified authentication service for all other systems provided in the Boost Plan.
-It uses JWT (JSON Web Token) style for the main functionalities, including: register, login, logout, and token
-verification.
+It uses JWT (JSON Web Token) style for the main functionalities, including: register, login, logout, email service, and
+token verification.
 
 ## Setup
 

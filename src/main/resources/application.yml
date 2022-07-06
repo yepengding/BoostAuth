@@ -11,7 +11,7 @@ spring:
 
 email:
   smtp:
-    host: *
+    host: your-host-domain
     port: 465
     auth: true
     ssl:
