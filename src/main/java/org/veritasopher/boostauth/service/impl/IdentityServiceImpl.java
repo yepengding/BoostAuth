@@ -32,17 +32,17 @@ public class IdentityServiceImpl implements IdentityService {
     }
 
     @Override
-    public Identity findByUsername(String username) {
+    public Optional<Identity> getByUsername(String username) {
         return identityRepository.findByUsername(username);
     }
 
     @Override
-    public Identity findByUsernameAndSource(String username, String source) {
+    public Optional<Identity> getByUsernameAndSource(String username, String source) {
         return identityRepository.findByUsernameAndSource(username, source);
     }
 
     @Override
-    public Identity findByUuid(String uuid) {
+    public Optional<Identity> getByUuid(String uuid) {
         return identityRepository.findByUuid(uuid);
     }
 

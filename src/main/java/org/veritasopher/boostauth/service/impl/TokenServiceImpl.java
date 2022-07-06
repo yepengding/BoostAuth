@@ -30,17 +30,12 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public Token findById(long id) {
-        Token token = null;
-        Optional<Token> result = tokenRepository.findById(id);
-        if (result.isPresent()) {
-            token = result.get();
-        }
-        return token;
+    public Optional<Token> getById(long id) {
+        return tokenRepository.findById(id);
     }
 
     @Override
-    public Token findByContent(String content) {
+    public Optional<Token> getByContent(String content) {
         return tokenRepository.findByContent(content);
     }
 }

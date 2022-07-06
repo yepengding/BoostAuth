@@ -15,11 +15,11 @@ public interface IdentityService {
 
     Optional<Identity> getById(long id);
 
-    Identity findByUsername(String username);
+    Optional<Identity> getByUsername(String username);
 
-    Identity findByUsernameAndSource(String username, String source);
+    Optional<Identity> getByUsernameAndSource(String username, String source);
 
-    Identity findByUuid(String uuid);
+    Optional<Identity> getByUuid(String uuid);
 
     List<Identity> getTop100Waiting();
 

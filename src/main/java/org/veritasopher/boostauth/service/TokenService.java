@@ -3,12 +3,14 @@ package org.veritasopher.boostauth.service;
 
 import org.veritasopher.boostauth.model.Token;
 
+import java.util.Optional;
+
 public interface TokenService {
     Token create(Token token);
 
     Token update(Token token);
 
-    Token findById(long id);
+    Optional<Token> getById(long id);
 
-    Token findByContent(String content);
+    Optional<Token> getByContent(String content);
 }
