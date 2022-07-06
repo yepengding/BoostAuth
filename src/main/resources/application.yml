@@ -9,6 +9,18 @@ spring:
     hibernate:
       ddl-auto: update
 
+email:
+  smtp:
+    host: *
+    port: 465
+    auth: true
+    ssl:
+      enable: true
+      protocols: TLSv1.2
+    starttls:
+      enable: true
+
+
 springdoc:
   swagger-ui:
     path=/swagger-ui.html
