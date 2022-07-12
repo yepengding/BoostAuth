@@ -1,5 +1,6 @@
 server:
   port: 9000
+
 spring:
   config:
     import: application-@spring.active@.yml
@@ -8,6 +9,10 @@ spring:
     #    show-sql: true
     hibernate:
       ddl-auto: update
+
+springdoc:
+  swagger-ui:
+    path=/swagger-ui.html
 
 email:
   smtp:
@@ -20,7 +25,6 @@ email:
     starttls:
       enable: true
 
-
-springdoc:
-  swagger-ui:
-    path=/swagger-ui.html
+application:
+  name: BoostAuth
+  version: 0.1.0

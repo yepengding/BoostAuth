@@ -9,8 +9,9 @@ spring:
 #        path: ./logs
 #        name: boostauth.log
 
-webserver:
-  url: http://localhost:8080
-
-socketserver:
-  url: http://localhost:9010
+boostauth:
+  profile: development
+  admin:
+    username: admin
+    password: adminDevPassword
+  security: 9t]id,s}WD#ZslGnNsy8ej[lr#6bzgG3

@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author Yepeng Ding
  */
 @Controller
-@RequestMapping("/view")
-public class ViewController {
+@RequestMapping("/admin/view")
+public class AdminViewController {
 
     @GetMapping("/manage")
     public String manage(Model model) {
