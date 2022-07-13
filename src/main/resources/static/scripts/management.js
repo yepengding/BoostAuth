@@ -24,7 +24,8 @@ class Management {
                         data.push({
                             id: e.id,
                             username: e.username,
-                            source: e.source
+                            source: e.source,
+                            groupId: e.groupId
                         })
                     });
 
@@ -98,6 +99,9 @@ class Management {
             }, {
                 field: 'source',
                 title: 'Source'
+            }, {
+                field: 'groupId',
+                title: 'groupId'
             }, {
                 field: 'operate',
                 title: 'Operation',

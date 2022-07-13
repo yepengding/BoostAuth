@@ -18,5 +18,7 @@ public interface IdentityRepository extends JpaRepository<Identity, Long> {
 
     Optional<Identity> findByUuid(String uuid);
 
+    List<Identity> findAllByGroupIdAndStatus(long groupId, int status);
+
     List<Identity> findTop100ByStatusOrderByIdDesc(int status);
 }

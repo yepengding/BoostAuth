@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
 @Data
@@ -23,4 +24,8 @@ public class AuthPreregister {
     @Size(min = 6, max = 16, message = "Source should be between 6 - 16.")
     @Pattern(regexp = "^[a-zA-Z\\d~@#$^*_.?-]+$", message = "Source contains illegal characters.")
     private String source;
+
+    @NotNull(message = "Group id should not be null.")
+    @Positive
+    private Long groupId;
 }

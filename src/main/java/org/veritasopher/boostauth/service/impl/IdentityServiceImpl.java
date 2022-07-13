@@ -47,6 +47,11 @@ public class IdentityServiceImpl implements IdentityService {
     }
 
     @Override
+    public List<Identity> getAllNormalByGroup(long id) {
+        return identityRepository.findAllByGroupIdAndStatus(id, IdentityStatus.NORMAL.getValue());
+    }
+
+    @Override
     public List<Identity> getTop100Waiting() {
         return identityRepository.findTop100ByStatusOrderByIdDesc(IdentityStatus.PREREGISTER.getValue());
     }

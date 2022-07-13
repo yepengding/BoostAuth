@@ -33,7 +33,7 @@ public class AdminAuthenticationProvider implements AuthenticationProvider {
         String password = authentication.getCredentials().toString();
 
         // Set super admin if not existing
-        Admin admin = adminService.getByUsername(name).orElse(new Admin(name, password));
+        Admin admin = adminService.getNormalByUsername(name).orElse(new Admin(name, password));
         if (boostAuthConfig.getAdminUsername().equals(admin.getUsername()) && boostAuthConfig.getAdminPassword().equals(admin.getPassword()) ||
                 CryptoUtils.matchByBCrypt(password, admin.getPassword())) {
             return new UsernamePasswordAuthenticationToken(

@@ -15,4 +15,6 @@ public interface AdminService {
 
     Optional<Admin> getByUsername(String username);
 
+    Optional<Admin> getNormalByUsername(String username);
+
 }

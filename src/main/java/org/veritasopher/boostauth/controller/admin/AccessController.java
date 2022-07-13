@@ -36,10 +36,10 @@ public class AccessController {
     @PostMapping("/register")
     public Response<Admin> register(@Valid @RequestBody AdminRegisterReq adminRegisterReq) {
         // Check not super admin username
-        Assert.isTrue(!boostAuthConfig.getAdminUsername().equals(adminRegisterReq.getUsername()), ErrorCode.EXIST, "Username exists.");
+        Assert.isTrue(!boostAuthConfig.getAdminUsername().equals(adminRegisterReq.getUsername()), ErrorCode.EXIST.getValue(), "Username exists.");
 
         // Check existence
-        Assert.isTrue(adminService.getByUsername(adminRegisterReq.getUsername()).isEmpty(), ErrorCode.EXIST, "Username exists.");
+        Assert.isTrue(adminService.getByUsername(adminRegisterReq.getUsername()).isEmpty(), ErrorCode.EXIST.getValue(), "Username exists.");
 
         // Instantiate admin
         Admin admin = BeanUtils.copyBean(adminRegisterReq, Admin.class);

@@ -21,6 +21,8 @@ public interface IdentityService {
 
     Optional<Identity> getByUuid(String uuid);
 
+    List<Identity> getAllNormalByGroup(long id);
+
     List<Identity> getTop100Waiting();
 
 }
