@@ -9,8 +9,9 @@ logging:
     path: ./logs
     name: boostauth.log
 
-webserver:
-  url: http://web-service:8080
-
-socketserver:
-  url: http://web-socket:9010
+boostauth:
+  profile: production
+  admin:
+    username: admin
+    password: SpUI;zb]bZ1<Kswd^.tjP9;Tr&8sKrbKRQ]9J+f}s#YLeP{NiL$T[4..F1D9wQJh
+  security: 6F*PZ6=AafLveRGPkKF}ClS%dCK)C=G0jPB#W;UNHk.JH^4#Mut?XFDk]nGS16H^

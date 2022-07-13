@@ -3,14 +3,17 @@ spring:
     url: jdbc:mysql://localhost:3306/boostauth
     username: root
     password: root
+  thymeleaf:
+    cache: false
 
 #logging:
 #  file:
 #    path: ./logs
 #    name: boostauth.log
 
-webserver:
-  url: http://localhost:8080
-
-socketserver:
-  url: http://localhost:9010
+boostauth:
+  profile: local
+  admin:
+    username: admin
+    password: admin
+  security: security
