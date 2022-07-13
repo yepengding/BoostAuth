@@ -56,7 +56,7 @@ public class AuthController {
      * @return message, token
      */
     @PostMapping("/login")
-    public Response<String> login(@RequestBody AuthLogin authLogin) {
+    public Response<String> login(@Valid @RequestBody AuthLogin authLogin) {
         Identity identity = identityService.getByUsernameAndSource(authLogin.getUsername(), authLogin.getSource()).orElseThrow(() -> {
             throw new SystemException(ErrorCode.NOT_EXIST.getValue(), "Username does not exist.");
         });
@@ -135,7 +135,7 @@ public class AuthController {
      * @return message, uuid
      */
     @PostMapping("/register")
-    public Response<String> register(@RequestBody AuthRegister authRegister) {
+    public Response<String> register(@Valid @RequestBody AuthRegister authRegister) {
         Identity identity = identityService.getByUuid(authRegister.getUuid()).orElseThrow(() -> {
             throw new SystemException(ErrorCode.NOT_EXIST.getValue(), "Register failed because identity does not exist.");
         });
@@ -156,7 +156,7 @@ public class AuthController {
      * @return message
      */
     @PostMapping("/logout")
-    public Response<String> logout(@RequestBody AuthLogout authLogout) {
+    public Response<String> logout(@Valid @RequestBody AuthLogout authLogout) {
         Identity identity = identityService.getByUuid(authLogout.getUuid()).orElseThrow(() -> {
             throw new SystemException(ErrorCode.NOT_EXIST.getValue(), "Identity does not exist.");
         });

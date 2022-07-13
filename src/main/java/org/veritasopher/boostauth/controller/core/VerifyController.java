@@ -19,6 +19,7 @@ import org.veritasopher.boostauth.model.vo.AuthVerify;
 import org.veritasopher.boostauth.service.IdentityService;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 import java.util.Date;
 
 /**
@@ -39,7 +40,7 @@ public class VerifyController {
      * @return message, uuid
      */
     @PostMapping("/verify")
-    public Response<String> verifyToken(@RequestBody AuthVerify authVerify) {
+    public Response<String> verifyToken(@Valid @RequestBody AuthVerify authVerify) {
         Assert.notNull(authVerify.getToken(), "Token should not be null.");
         String token = authVerify.getToken().replaceFirst("Bearer ", "");
 
