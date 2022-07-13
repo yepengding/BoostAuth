@@ -24,6 +24,7 @@ import org.veritasopher.boostauth.service.IdentityService;
 import org.veritasopher.boostauth.service.TokenService;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
@@ -98,9 +99,7 @@ public class AuthController {
      * @return message, uuid
      */
     @PostMapping("/preregister")
-    public Response<String> preregister(@RequestBody AuthPreregister authPreregister) {
-        Assert.isTrue(preregistrationValid(authPreregister), "Preregister is invalid.");
-
+    public Response<String> preregister(@Valid @RequestBody AuthPreregister authPreregister) {
         // Check existence.
         Assert.isTrue(identityService.getByUsernameAndSource(authPreregister.getUsername(), authPreregister.getSource()).isEmpty(),
                 ErrorCode.EXIST, "Username exists.");
@@ -163,27 +162,6 @@ public class AuthController {
         token.setStatus(TokenStatus.INVALID.getValue());
         tokenService.update(token);
         return Response.success("Logout successfully.");
-    }
-
-    /**
-     * Preregister information is valid
-     *
-     * @param authPreregister preregistration information
-     * @return true if valid. Otherwise, false.
-     */
-    private boolean preregistrationValid(AuthPreregister authPreregister) {
-        Assert.notNull(authPreregister.getUsername(), "Username should not be null.");
-        Assert.notNull(authPreregister.getPassword(), "Password should not be null.");
-        Assert.notNull(authPreregister.getSource(), "Source should not be null.");
-
-        Assert.isTrue(authPreregister.getUsername().length() >= 6 && authPreregister.getUsername().length() <= 16,
-                "Username length should be between 6 - 16.");
-        Assert.isTrue(authPreregister.getPassword().length() >= 6 && authPreregister.getPassword().length() <= 16,
-                "Password length should be between 6 - 16.");
-        Assert.isTrue(authPreregister.getSource().length() >= 1 && authPreregister.getSource().length() <= 55,
-                "Source length should be between 1 - 55.");
-
-        return true;
     }
 
 }
