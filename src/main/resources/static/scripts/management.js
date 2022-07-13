@@ -1,7 +1,7 @@
 const API = {
-    getAllPreregistration: () => $.getJSON("/admin/registration/all/preregister"),
-    approveRegistration: (id) => $.post(`/admin/registration/approve/${id}`),
-    rejectRegistration: (id) => $.post(`/admin/registration/reject/${id}`),
+    getAllPreregistration: () => $.getJSON("/admin/identity/all/preregister"),
+    approveRegistration: (id) => $.post(`/admin/identity/approve/${id}`),
+    rejectRegistration: (id) => $.post(`/admin/identity/reject/${id}`),
 }
 
 class Management {

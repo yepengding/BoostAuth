@@ -1,4 +1,4 @@
-package org.veritasopher.boostauth.controller;
+package org.veritasopher.boostauth.controller.admin;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -6,17 +6,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- * View Controller
+ * Admin View Controller
  *
  * @author Yepeng Ding
  */
-@Controller
+@Controller("adminViewController")
 @RequestMapping("/admin/view")
-public class AdminViewController {
+public class ViewController {
 
     @GetMapping("/manage")
     public String manage(Model model) {
-        return "view/management";
+        return "view/admin/management";
     }
 
 }

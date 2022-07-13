@@ -1,4 +1,4 @@
-package org.veritasopher.boostauth.controller;
+package org.veritasopher.boostauth.controller.admin;
 
 import org.springframework.web.bind.annotation.*;
 import org.veritasopher.boostauth.core.dictionary.IdentityStatus;
@@ -16,19 +16,19 @@ import java.util.List;
  *
  * @author Yepeng Ding
  */
-@RestController
-@RequestMapping("/admin")
-public class AdminController {
+@RestController("adminIdentityController")
+@RequestMapping("/admin/identity")
+public class IdentityController {
 
     @Resource
     private IdentityService identityService;
 
-    @GetMapping("/registration/all/preregister")
+    @GetMapping("/all/preregister")
     public Response<List<Identity>> allPreregister() {
         return Response.success(identityService.getTop100Waiting());
     }
 
-    @PostMapping("/registration/approve/{id}")
+    @PostMapping("/approve/{id}")
     public Response<Identity> approve(@PathVariable("id") Long id) {
         Identity identity = identityService.getById(id).orElseThrow(() -> {
             throw new SystemException(String.format("Preregistration record (%s) does not exist.", id));
@@ -43,7 +43,7 @@ public class AdminController {
         return Response.success(identityService.update(identity));
     }
 
-    @PostMapping("/registration/reject/{id}")
+    @PostMapping("/reject/{id}")
     public Response<Identity> reject(@PathVariable("id") Long id) {
         Identity identity = identityService.getById(id).orElseThrow(() -> {
             throw new SystemException(String.format("Preregistration record (%s) does not exist.", id));

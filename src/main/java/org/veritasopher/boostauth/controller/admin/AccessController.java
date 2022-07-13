@@ -1,4 +1,4 @@
-package org.veritasopher.boostauth.controller;
+package org.veritasopher.boostauth.controller.admin;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,9 +23,9 @@ import javax.validation.Valid;
  *
  * @author Yepeng Ding
  */
-@RestController
+@RestController("adminAccessController")
 @RequestMapping("/admin/access")
-public class AdminAccessController {
+public class AccessController {
 
     @Resource
     private BoostAuthConfig boostAuthConfig;
