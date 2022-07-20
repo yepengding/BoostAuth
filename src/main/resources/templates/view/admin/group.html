@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Group Control</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.css">
+    <link rel="stylesheet" th:href="@{/styles/main.css}">
+</head>
+<body>
+
+<div class="container">
+    <div id="message-box" class="d-none">
+        <span id="message-content"></span>
+<!--        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>-->
+    </div>
+    <div id="toolbar">
+        <button id="create-group" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <i class="bi bi-plus-lg"></i> Create
+        </button>
+    </div>
+    <table id="table"></table>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Create Group</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group my-3">
+                        <label for="nameInput">Group Name</label>
+                        <input type="text" class="form-control" id="nameInput" placeholder="Please input the group name.">
+                    </div>
+
+                    <div class="form-group my-3">
+                        <label for="descriptionInput">Group Description</label>
+                        <input type="text" class="form-control" id="descriptionInput" placeholder="Please input the group description.">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="create-btn" class="btn btn-primary">Create</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+        crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.js"></script>
+<script type="text/javascript" th:src="@{/scripts/main.js}"></script>
+<script type="text/javascript" th:src="@{/scripts/group.js}"></script>
+</body>
+</html>

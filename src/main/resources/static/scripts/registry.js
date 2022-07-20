@@ -4,7 +4,7 @@ const API = {
     rejectRegistration: (id) => $.post(`/admin/identity/reject/${id}`),
 }
 
-class Management {
+class Registry {
 
     constructor() {
         this.$table = $('#table');
@@ -116,6 +116,6 @@ class Management {
 }
 
 (function () {
-    const management = new Management()
-    management.run();
+    const registry = new Registry()
+    registry.run();
 })()

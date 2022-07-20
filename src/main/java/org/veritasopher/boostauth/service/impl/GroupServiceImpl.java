@@ -22,8 +22,18 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    public List<Group> getAll() {
+        return groupRepository.findAllByStatusNot(GroupStatus.DELETED.getValue());
+    }
+
+    @Override
     public List<Group> getAllNormal() {
         return groupRepository.findAllByStatus(GroupStatus.NORMAL.getValue());
+    }
+
+    @Override
+    public Optional<Group> getById(long id) {
+        return groupRepository.findByIdAndStatusNot(id, GroupStatus.DELETED.getValue());
     }
 
     @Override
@@ -34,5 +44,17 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Optional<Group> getByName(String name) {
         return groupRepository.findByName(name);
+    }
+
+    @Override
+    public Group update(Group group) {
+        return groupRepository.save(group);
+    }
+
+    @Override
+    public boolean delete(Group group) {
+        group.setStatus(GroupStatus.DELETED.getValue());
+        groupRepository.save(group);
+        return true;
     }
 }

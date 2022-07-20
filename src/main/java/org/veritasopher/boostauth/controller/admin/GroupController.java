@@ -1,6 +1,5 @@
 package org.veritasopher.boostauth.controller.admin;
 
-import org.apache.catalina.User;
 import org.springframework.web.bind.annotation.*;
 import org.veritasopher.boostauth.core.dictionary.ErrorCode;
 import org.veritasopher.boostauth.core.dictionary.GroupStatus;
@@ -55,6 +54,38 @@ public class GroupController {
     @GetMapping("/all/normal")
     public Response<List<Group>> getAllNormal() {
         return Response.success(groupService.getAllNormal());
+    }
+
+    @GetMapping("/all")
+    public Response<List<Group>> getAll() {
+        return Response.success(groupService.getAll());
+    }
+
+    @PostMapping("/enable/{id}")
+    public Response<Group> enable(@PathVariable("id") Long id) {
+        Group group = groupService.getById(id).orElseThrow(() -> {
+            throw new SystemException("Group does not exist.");
+        });
+        Assert.isTrue(GroupStatus.DISABLED.isTrue(group.getStatus()), "Group has been enabled.");
+        group.setStatus(GroupStatus.NORMAL.getValue());
+        return Response.success(groupService.update(group));
+    }
+
+    @PostMapping("/disable/{id}")
+    public Response<Group> disable(@PathVariable("id") Long id) {
+        Group group = groupService.getNormalById(id).orElseThrow(() -> {
+            throw new SystemException("Group does not exist or has been disabled.");
+        });
+        group.setStatus(GroupStatus.DISABLED.getValue());
+        return Response.success(groupService.update(group));
+    }
+
+    @PostMapping("/delete/{id}")
+    public Response<Boolean> delete(@PathVariable("id") Long id) {
+        Group group = groupService.getById(id).orElseThrow(() -> {
+            throw new SystemException("Group does not exist.");
+        });
+        return Response.success(groupService.delete(group));
     }
 
 }

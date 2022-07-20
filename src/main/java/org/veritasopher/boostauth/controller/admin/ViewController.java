@@ -14,9 +14,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/admin/view")
 public class ViewController {
 
-    @GetMapping("/manage")
-    public String manage(Model model) {
-        return "view/admin/management";
+    @GetMapping("/registry")
+    public String registry(Model model) {
+        return "view/admin/registry";
+    }
+
+    @GetMapping("/group")
+    public String group(Model model) {
+        return "view/admin/group";
     }
 
 }
