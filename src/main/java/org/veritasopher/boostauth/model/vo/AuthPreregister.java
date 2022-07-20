@@ -26,6 +26,6 @@ public class AuthPreregister {
     private String source;
 
     @NotNull(message = "Group id should not be null.")
-    @Positive
+    @Positive(message = "Group id should be greater than 0.")
     private Long groupId;
 }

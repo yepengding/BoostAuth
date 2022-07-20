@@ -1,5 +1,7 @@
 package org.veritasopher.boostauth.controller.admin;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 import org.veritasopher.boostauth.core.dictionary.IdentityStatus;
 import org.veritasopher.boostauth.core.exception.Assert;
@@ -24,8 +26,9 @@ public class IdentityController {
     private IdentityService identityService;
 
     @GetMapping("/all/preregister")
-    public Response<List<Identity>> allPreregister() {
-        return Response.success(identityService.getTop100Waiting());
+    public Response<Page<Identity>> getAllPreregister(@RequestParam Integer pageIndex,
+                                                      @RequestParam Integer pageSize) {
+        return Response.success(identityService.getAllPreregistration(PageRequest.of(pageIndex, pageSize)));
     }
 
     @PostMapping("/approve/{id}")

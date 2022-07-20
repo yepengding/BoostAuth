@@ -1,35 +1,40 @@
 const API = {
-    getAllPreregistration: () => $.getJSON("/admin/identity/all/preregister"),
+    getAllPreregistration: (pageable) => $.getJSON("/admin/identity/all/preregister", pageable),
     approveRegistration: (id) => $.post(`/admin/identity/approve/${id}`),
     rejectRegistration: (id) => $.post(`/admin/identity/reject/${id}`),
 }
 
-class Registry {
+class Preregistration {
 
     constructor() {
         this.$table = $('#table');
+        console.log()
     }
 
     run() {
         this.#renderTable();
-        this.#setWaitingData();
+        // this.#setWaitingData();
     }
 
-    #setWaitingData() {
-        API.getAllPreregistration()
+    #setPreregistrationData(params) {
+        API.getAllPreregistration(new Page(params.data.offset))
             .done((d) => {
                 if (d.code === CODE.SUCCESS) {
-                    const data = [];
-                    d.data.forEach((e) => {
-                        data.push({
+                    const data = d.data;
+                    const tableData = {
+                        rows: [],
+                        total: data.totalElements,
+                        totalNotFiltered: data.totalElements
+                    }
+                    data.content.forEach((e) => {
+                        tableData.rows.push({
                             id: e.id,
                             username: e.username,
                             source: e.source,
                             groupId: e.groupId
                         })
                     });
-
-                    this.$table.bootstrapTable('append', data);
+                    params.success(tableData)
                 }
             });
     }
@@ -89,6 +94,8 @@ class Registry {
             pagination: true,
             pageSize: 20,
             search: true,
+            sidePagination: "server",
+            ajax: this.#setPreregistrationData,
             columns: [{
                 field: 'id',
                 title: 'ID',
@@ -113,9 +120,10 @@ class Registry {
             data: []
         })
     }
+
 }
 
 (function () {
-    const registry = new Registry()
-    registry.run();
+    const preregistration = new Preregistration()
+    preregistration.run();
 })()

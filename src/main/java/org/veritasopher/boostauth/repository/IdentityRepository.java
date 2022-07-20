@@ -1,6 +1,8 @@
 package org.veritasopher.boostauth.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.veritasopher.boostauth.model.Identity;
 
 import java.util.List;
@@ -11,7 +13,7 @@ import java.util.Optional;
  *
  * @author Yepeng Ding
  */
-public interface IdentityRepository extends JpaRepository<Identity, Long> {
+public interface IdentityRepository extends PagingAndSortingRepository<Identity, Long> {
     Optional<Identity> findByUsername(String username);
 
     Optional<Identity> findByUsernameAndSource(String username, String source);
@@ -20,5 +22,5 @@ public interface IdentityRepository extends JpaRepository<Identity, Long> {
 
     List<Identity> findAllByGroupIdAndStatus(long groupId, int status);
 
-    List<Identity> findTop100ByStatusOrderByIdDesc(int status);
+    Page<Identity> findAllByStatusOrderByIdDesc(int status, Pageable pageable);
 }
