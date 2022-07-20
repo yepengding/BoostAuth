@@ -8,11 +8,11 @@ class Page {
     static defaultSize = 20;
 
     constructor(index, size) {
-        this.pageIndex = index;
+        this.index = index;
         if (size) {
-            this.pageSize = size;
+            this.size = size;
         } else {
-            this.pageSize = Page.defaultSize;
+            this.size = Page.defaultSize;
         }
     }
 
@@ -23,11 +23,11 @@ class OffsetPage {
     static defaultSize = 20;
 
     constructor(offset, size) {
-        this.pageIndex = Math.floor(offset / size);
+        this.index = Math.floor(offset / size);
         if (size) {
-            this.pageSize = size;
+            this.size = size;
         } else {
-            this.pageSize = Page.defaultSize;
+            this.size = Page.defaultSize;
         }
     }
 

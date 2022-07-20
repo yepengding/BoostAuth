@@ -4,6 +4,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.veritasopher.boostauth.core.response.Response;
 
+import javax.validation.ValidationException;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -35,6 +37,19 @@ public class GlobalExceptionHandler {
     public Response<String> systemExceptionHandler(SystemException e) {
         logger.error(e.getMessage());
         return Response.failure(e.getCode(), e.getMessage());
+    }
+
+    /**
+     * BindException Exception Handler
+     *
+     * @param e exception
+     * @return response
+     */
+    @ResponseBody
+    @ExceptionHandler(value = BindException.class)
+    public Response<String> bindExceptionHandler(BindException e) {
+        logger.error(e.getMessage());
+        return Response.failure(Objects.requireNonNull(e.getFieldError()).getDefaultMessage());
     }
 
     /**

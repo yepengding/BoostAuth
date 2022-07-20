@@ -13,7 +13,6 @@ class Preregistration {
 
     run() {
         this.#renderTable();
-        // this.#setWaitingData();
     }
 
     #setPreregistrationData(params) {
