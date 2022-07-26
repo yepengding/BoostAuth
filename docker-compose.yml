@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     working_dir: /auth
     volumes:
-      - /opt/boostauth/logs:/web/logs
+      - /opt/boostauth/logs:/auth/logs
       - maven-repo:/root/.m2
     ports:
       - '9000:9000'
