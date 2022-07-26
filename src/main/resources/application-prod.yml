@@ -6,8 +6,7 @@ spring:
 
 logging:
   file:
-    path: ./logs
-    name: boostauth.log
+    name: ./logs/boostauth.log
 
 boostauth:
   profile: production
