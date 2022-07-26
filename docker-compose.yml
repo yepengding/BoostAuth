@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     working_dir: /auth
     volumes:
-      - boostauth_logs:/web/logs
+      - /opt/boostauth/logs:/web/logs
       - maven-repo:/root/.m2
     ports:
       - '9000:9000'
@@ -26,6 +26,8 @@ services:
       MYSQL_USER: boostauthadmin
       MYSQL_PASSWORD: boostauthadminpwd
       TZ: Asia/Tokyo
+    volumes:
+      - /opt/boostauth/db:/var/lib/mysql
     ports:
       - '9001:3306'
     restart: always

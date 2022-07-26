@@ -1,5 +1,7 @@
 package org.veritasopher.boostauth.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.veritasopher.boostauth.model.Identity;
 
 import java.util.List;
@@ -21,6 +23,8 @@ public interface IdentityService {
 
     Optional<Identity> getByUuid(String uuid);
 
-    List<Identity> getTop100Waiting();
+    List<Identity> getAllNormalByGroup(long id);
+
+    Page<Identity> getAllPreregistration(Pageable pageable);
 
 }

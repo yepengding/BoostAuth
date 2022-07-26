@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
- * Profile Property
+ * BoostAuth Property
  *
  * @author Yepeng Ding
  */

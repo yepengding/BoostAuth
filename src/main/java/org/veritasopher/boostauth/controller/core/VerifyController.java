@@ -19,6 +19,7 @@ import org.veritasopher.boostauth.model.vo.AuthVerify;
 import org.veritasopher.boostauth.service.IdentityService;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 import java.util.Date;
 
 /**
@@ -39,7 +40,7 @@ public class VerifyController {
      * @return message, uuid
      */
     @PostMapping("/verify")
-    public Response<String> verifyToken(@RequestBody AuthVerify authVerify) {
+    public Response<String> verifyToken(@Valid @RequestBody AuthVerify authVerify) {
         Assert.notNull(authVerify.getToken(), "Token should not be null.");
         String token = authVerify.getToken().replaceFirst("Bearer ", "");
 
@@ -59,20 +60,20 @@ public class VerifyController {
 
         // Corresponding Identity should exist
         Identity identity = identityService.getByUuid(jwt.getSubject()).orElseThrow(() -> {
-            throw new SystemException(ErrorCode.UNAUTHENTICATED, "Identity is abnormal.");
+            throw new SystemException(ErrorCode.UNAUTHENTICATED.getValue(), "Identity is abnormal.");
         });
 
         // Identity should be at normal status
         Assert.isTrue(IdentityStatus.NORMAL.isTrue(identity.getStatus()),
-                ErrorCode.UNAUTHORIZED, "Identity is abnormal.");
+                ErrorCode.UNAUTHORIZED.getValue(), "Identity is abnormal.");
 
         // Token should be at normal status
         Assert.isTrue(TokenStatus.NORMAL.isTrue(identity.getToken().getStatus()),
-                ErrorCode.UNAUTHORIZED, "Token is abnormal.");
+                ErrorCode.UNAUTHORIZED.getValue(), "Token is abnormal.");
 
         // Tokens should be matched
         Assert.isTrue(identity.getToken().getContent().equals(authVerify.getToken()),
-                ErrorCode.UNAUTHENTICATED, "Token is unauthenticated.");
+                ErrorCode.UNAUTHENTICATED.getValue(), "Token is unauthenticated.");
 
         return Response.success("Verified.", identity.getUuid());
     }

@@ -1,5 +1,7 @@
 package org.veritasopher.boostauth.service.impl;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.veritasopher.boostauth.core.dictionary.IdentityStatus;
 import org.veritasopher.boostauth.model.Identity;
@@ -47,7 +49,12 @@ public class IdentityServiceImpl implements IdentityService {
     }
 
     @Override
-    public List<Identity> getTop100Waiting() {
-        return identityRepository.findTop100ByStatusOrderByIdDesc(IdentityStatus.PREREGISTER.getValue());
+    public List<Identity> getAllNormalByGroup(long id) {
+        return identityRepository.findAllByGroupIdAndStatus(id, IdentityStatus.NORMAL.getValue());
+    }
+
+    @Override
+    public Page<Identity> getAllPreregistration(Pageable pageable) {
+        return identityRepository.findAllByStatusOrderByIdDesc(IdentityStatus.PREREGISTER.getValue(), pageable);
     }
 }

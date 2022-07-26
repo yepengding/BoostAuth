@@ -3,9 +3,20 @@
 Authentication system for **Boost Plan**. The **Boost Plan** is a scaffold for building usable web applications in no
 time.
 
-BoostAuth provides a unified authentication service for all other systems provided in the Boost Plan.
+BoostAuth provides a unified authentication and authorization service for all other systems provided in the Boost Plan.
 It uses JWT (JSON Web Token) style for the main functionalities, including: register, login, logout, email service, and
 token verification.
+
+## Features
+
+- [x] Token-based authentication and authorization
+- [x] Fully-fledged access control
+- [x] Management system with frontend
+- [x] Delegation support
+- [x] Email service
+- [x] Admin control
+- [x] Group control
+- [x] Docker-based deployment
 
 ## Setup
 

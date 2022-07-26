@@ -1,9 +1,6 @@
 package org.veritasopher.boostauth.model;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -12,37 +9,34 @@ import javax.persistence.*;
 import java.util.Date;
 
 /**
- * Identity entity
+ * Administrator entity
  *
  * @author Yepeng Ding
  */
 @Entity
-@Table(name = "auth_identity")
+@Table(name = "auth_admin")
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
 @ToString
 @RequiredArgsConstructor
-public class Identity {
+@NoArgsConstructor
+public class Admin {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "uuid", unique = true)
-    private String uuid;
-
+    @NonNull
     @Column(name = "username")
     private String username;
 
+    @NonNull
     @Column(name = "password")
     private String password;
 
-    @Column(name = "source")
-    private String source;
-
-    @Column(name = "group_id")
-    private Long groupId;
+    @Column(name = "level")
+    private Integer level;
 
     @Column(name = "create_date")
     @CreatedDate
@@ -54,9 +48,4 @@ public class Identity {
 
     @Column(name = "status")
     private int status;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "token", referencedColumnName = "id")
-    private Token token;
-
 }
