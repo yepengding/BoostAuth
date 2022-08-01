@@ -2,13 +2,14 @@ package org.veritasopher.boostauth.model.vo.adminreq;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.PositiveOrZero;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 @Data
 public class AdminRegisterReq {
+
+    @NotNull(message = "Security should not be null.")
+    @NotEmpty(message = "Security should not be empty")
+    private String security;
 
     @NotNull(message = "Username should not be null.")
     @Size(min = 6, max = 16, message = "Username should be between 6 - 16.")

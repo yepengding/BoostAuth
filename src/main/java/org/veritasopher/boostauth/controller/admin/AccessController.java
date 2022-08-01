@@ -35,6 +35,9 @@ public class AccessController {
 
     @PostMapping("/register")
     public Response<Admin> register(@Valid @RequestBody AdminRegisterReq adminRegisterReq) {
+        // Check security
+        Assert.isTrue(boostAuthConfig.getSecurity().equals(adminRegisterReq.getSecurity()), ErrorCode.UNAUTHORIZED.getValue(), "Unauthenticated registration.");
+
         // Check not super admin username
         Assert.isTrue(!boostAuthConfig.getAdminUsername().equals(adminRegisterReq.getUsername()), ErrorCode.EXIST.getValue(), "Username exists.");
 

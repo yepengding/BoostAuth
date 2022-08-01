@@ -22,6 +22,9 @@ public class BoostAuthConfig {
     @Value("${boostauth.admin.password}")
     private String adminPassword;
 
+    @Value("${boostauth.security}")
+    private String security;
+
     public boolean isLocal() {
         return "local".equals(profile);
     }
