@@ -1,13 +1,15 @@
-package org.veritasopher.boostauth.model.vo;
+package org.veritasopher.boostauth.model.vo.adminreq;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 @Data
-public class AuthLogin {
+public class AdminRegisterReq {
+
+    @NotNull(message = "Security should not be null.")
+    @NotEmpty(message = "Security should not be empty")
+    private String security;
 
     @NotNull(message = "Username should not be null.")
     @Size(min = 6, max = 16, message = "Username should be between 6 - 16.")
@@ -19,9 +21,7 @@ public class AuthLogin {
     @Pattern(regexp = "^[a-zA-Z\\d~@#$^*_.?-]+$", message = "Password contains illegal characters.")
     private String password;
 
-    @NotNull(message = "Source should not be null.")
-    @Size(min = 6, max = 16, message = "Source should be between 6 - 16.")
-    @Pattern(regexp = "^[a-zA-Z\\d~@#$^*_.?-]+$", message = "Source contains illegal characters.")
-    private String source;
+    @PositiveOrZero(message = "Level should be positive or zero.")
+    private Integer level;
 
 }

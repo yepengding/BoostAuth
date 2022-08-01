@@ -15,7 +15,7 @@ import org.veritasopher.boostauth.core.exception.Assert;
 import org.veritasopher.boostauth.core.exception.SystemException;
 import org.veritasopher.boostauth.core.response.Response;
 import org.veritasopher.boostauth.model.Identity;
-import org.veritasopher.boostauth.model.vo.AuthVerify;
+import org.veritasopher.boostauth.model.vo.authreq.AuthVerify;
 import org.veritasopher.boostauth.service.IdentityService;
 
 import javax.annotation.Resource;

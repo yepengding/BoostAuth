@@ -45,15 +45,21 @@ mvn clean package -D maven.test.skip=true -P [local/dev/prod]
 
 domain:9000/swagger-ui.html
 
+Authentication logic:
+
 1. */auth/preregister*  Generate `Identity` with **UUID** and `Token`
 2. */auth/register* Make `Identity` valid
 3. */auth/login* Sign in
 4. */verify* Verify a token
 5. */auth/logout* Sign out
+6. */auth/reset/password* Reset password
 
 ## Frontend
 
-- Management: `/view/manage`
+### Admin
+
+- Manage preregistration: `/admin/view/manage/preregister`
+- Manage group: `/admin/view/manage/group`
 
 ---
 

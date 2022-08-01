@@ -15,10 +15,7 @@ import org.veritasopher.boostauth.core.exception.SystemException;
 import org.veritasopher.boostauth.core.response.Response;
 import org.veritasopher.boostauth.model.Identity;
 import org.veritasopher.boostauth.model.Token;
-import org.veritasopher.boostauth.model.vo.AuthLogin;
-import org.veritasopher.boostauth.model.vo.AuthLogout;
-import org.veritasopher.boostauth.model.vo.AuthPreregister;
-import org.veritasopher.boostauth.model.vo.AuthRegister;
+import org.veritasopher.boostauth.model.vo.authreq.*;
 import org.veritasopher.boostauth.service.GroupService;
 import org.veritasopher.boostauth.service.IdentityService;
 import org.veritasopher.boostauth.service.TokenService;
@@ -169,6 +166,34 @@ public class AuthController {
         token.setStatus(TokenStatus.INVALID.getValue());
         tokenService.update(token);
         return Response.success("Logout successfully.");
+    }
+
+    /**
+     * Reset password
+     *
+     * @param authResetPwd reset password information
+     * @return message
+     */
+    @PostMapping("/reset/password")
+    public Response<String> resetPwd(@Valid @RequestBody AuthResetPwd authResetPwd) {
+        Identity identity = identityService.getByUuid(authResetPwd.getUuid()).orElseThrow(() -> {
+            throw new SystemException(ErrorCode.NOT_EXIST.getValue(), "Identity does not exist.");
+        });
+
+        // Identity should be at normal status
+        Assert.isTrue(IdentityStatus.NORMAL.isTrue(identity.getStatus()),
+                ErrorCode.UNAUTHORIZED.getValue(), "Identity is abnormal.");
+
+        // Check password
+        Assert.isTrue(CryptoUtils.matchByBCrypt(authResetPwd.getOldPassword(), identity.getPassword()),
+                ErrorCode.UNAUTHENTICATED.getValue(), "Wrong password.");
+
+        // Update password
+        identity.setPassword(CryptoUtils.encodeByBCrypt(authResetPwd.getNewPassword()));
+
+        identityService.update(identity);
+
+        return Response.success("Reset password successfully.");
     }
 
 }

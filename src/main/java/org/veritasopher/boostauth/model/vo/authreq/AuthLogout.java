@@ -1,4 +1,4 @@
-package org.veritasopher.boostauth.model.vo;
+package org.veritasopher.boostauth.model.vo.authreq;
 
 import lombok.Data;
 
