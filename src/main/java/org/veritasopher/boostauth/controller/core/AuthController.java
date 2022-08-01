@@ -176,8 +176,8 @@ public class AuthController {
      */
     @PostMapping("/reset/password")
     public Response<String> resetPwd(@Valid @RequestBody AuthResetPwd authResetPwd) {
-        Identity identity = identityService.getByUsernameAndSource(authResetPwd.getUsername(), authResetPwd.getSource()).orElseThrow(() -> {
-            throw new SystemException(ErrorCode.NOT_EXIST.getValue(), "Username does not exist.");
+        Identity identity = identityService.getByUuid(authResetPwd.getUuid()).orElseThrow(() -> {
+            throw new SystemException(ErrorCode.NOT_EXIST.getValue(), "Identity does not exist.");
         });
 
         // Identity should be at normal status
