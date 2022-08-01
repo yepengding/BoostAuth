@@ -10,7 +10,7 @@ import org.veritasopher.boostauth.core.dictionary.ErrorCode;
 import org.veritasopher.boostauth.core.exception.Assert;
 import org.veritasopher.boostauth.core.response.Response;
 import org.veritasopher.boostauth.model.Admin;
-import org.veritasopher.boostauth.model.vo.req.AdminRegisterReq;
+import org.veritasopher.boostauth.model.vo.adminreq.AdminRegisterReq;
 import org.veritasopher.boostauth.service.AdminService;
 import org.veritasopher.boostauth.utils.BeanUtils;
 import org.veritasopher.boostauth.utils.CryptoUtils;

@@ -8,7 +8,7 @@ import org.veritasopher.boostauth.core.exception.SystemException;
 import org.veritasopher.boostauth.core.response.Response;
 import org.veritasopher.boostauth.model.Group;
 import org.veritasopher.boostauth.model.Identity;
-import org.veritasopher.boostauth.model.vo.req.GroupCreateReq;
+import org.veritasopher.boostauth.model.vo.adminreq.GroupCreateReq;
 import org.veritasopher.boostauth.service.GroupService;
 import org.veritasopher.boostauth.service.IdentityService;
 import org.veritasopher.boostauth.utils.BeanUtils;
