@@ -10,11 +10,10 @@ import org.veritasopher.boostauth.config.GlobalKey;
 import org.veritasopher.boostauth.core.dictionary.ErrorCode;
 import org.veritasopher.boostauth.core.dictionary.IdentityStatus;
 import org.veritasopher.boostauth.core.dictionary.TokenStatus;
+import org.veritasopher.boostauth.core.exception.Assert;
 import org.veritasopher.boostauth.core.exception.type.AuthenticationException;
 import org.veritasopher.boostauth.core.exception.type.AuthorizationException;
 import org.veritasopher.boostauth.core.exception.type.BadRequestException;
-import org.veritasopher.boostauth.core.exception.type.InternalException;
-import org.veritasopher.boostauth.core.exception.Assert;
 import org.veritasopher.boostauth.core.response.Response;
 import org.veritasopher.boostauth.model.Identity;
 import org.veritasopher.boostauth.model.Token;
@@ -107,7 +106,7 @@ public class AuthController {
 
         // Check group existence
         Assert.isTrue(groupService.getNormalById(authPreregister.getGroupId()).isPresent(), () -> {
-            throw new InternalException("Group does not exist.");
+            throw new BadRequestException("Group does not exist.");
         });
 
         Identity identity = new Identity();

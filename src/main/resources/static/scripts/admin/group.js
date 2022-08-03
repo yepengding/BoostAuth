@@ -23,20 +23,17 @@ $("#create-btn").click(() => {
         $('#nameInput').val(),
         $('#descriptionInput').val(),
     )).done(d => {
-        if (d.code === CODE.SUCCESS) {
-            $('#message-box').removeClass().addClass("alert alert-success alert-dismissible fade show");
-            $('#message-content').text(`Created successfully.`);
-            const data = d.data;
-            $('#table').bootstrapTable('append', [{
-                id: data.id,
-                name: data.name,
-                description: data.description
-            }])
-        } else {
-            $('#message-box').removeClass().addClass("alert alert-danger alert-dismissible fade show");
-            $('#message-content').text(d.message);
-            console.error(d.message);
-        }
+        Assert.isTrue(d.code === CODE.SUCCESS, () => Message.failure(d.message));
+        Message.success("Created successfully.");
+        const data = d.data;
+        $('#table').bootstrapTable('append', [{
+            id: data.id,
+            name: data.name,
+            description: data.description
+        }])
+    }).fail(e => {
+        Message.failure(e.responseJSON.message);
+        console.error(e.responseJSON.message);
     })
 })
 
@@ -81,39 +78,49 @@ class Group {
             'click #disable': function (e, value, row, index) {
                 $('#disable').prop('disabled', true);
                 $('#delete').prop('disabled', true);
+                const setSuccessView = () => {
+                    Message.success(`Disabled (${row.id}) successfully.`);
+                };
+                const setFailureView = () => {
+                    Message.failure(`Failed to disable (${row.id}).`);
+                    $('#edit').prop('disabled', false);
+                    $('#delete').prop('disabled', false);
+                }
+
                 API.disableGroup(row.id)
                     .done((d) => {
-                        if (d.code === CODE.SUCCESS) {
-                            $('#message-box').removeClass().addClass("alert alert-success alert-dismissible fade show");
-                            $('#message-content').text(`Disabled (${row.id}) successfully.`);
-                        } else {
-                            $('#message-box').removeClass().addClass("alert alert-danger alert-dismissible fade show");
-                            $('#message-content').text(`Failed to disable (${row.id}).`);
-                            console.error(d.message);
-                            $('#edit').prop('disabled', false);
-                            $('#delete').prop('disabled', false);
-                        }
+                        Assert.isTrue(d.code === CODE.SUCCESS, setFailureView);
+                        setSuccessView();
+                    })
+                    .fail(e => {
+                        setFailureView();
+                        console.error(e.responseJSON.message);
                     });
             },
             'click #delete': function (e, value, row, index) {
                 $('#edit').prop('disabled', true);
                 $('#delete').prop('disabled', true);
+                const setSuccessView = () => {
+                    Message.success(`Deleted (${row.id}) successfully.`);
+                };
+                const setFailureView = () => {
+                    Message.failure(`Failed to delete (${row.id}).`);
+                    $('#edit').prop('disabled', false);
+                    $('#delete').prop('disabled', false);
+                }
+
                 API.deleteGroup(row.id)
                     .done((d) => {
-                        if (d.code === CODE.SUCCESS) {
-                            $('#message-box').removeClass().addClass("alert alert-success alert-dismissible fade show");
-                            $('#message-content').text(`Deleted (${row.id}) successfully.`);
-                            $('#table').bootstrapTable('remove', {
-                                field: 'id',
-                                values: [row.id]
-                            })
-                        } else {
-                            $('#message-box').removeClass().addClass("alert alert-danger alert-dismissible fade show");
-                            $('#message-content').text(`Failed to delete (${row.id}).`);
-                            console.error(d.message);
-                            $('#edit').prop('disabled', false);
-                            $('#delete').prop('disabled', false);
-                        }
+                        Assert.isTrue(d.code === CODE.SUCCESS, setFailureView);
+                        setSuccessView();
+                        $('#table').bootstrapTable('remove', {
+                            field: 'id',
+                            values: [row.id]
+                        });
+                    })
+                    .fail(e => {
+                        setFailureView();
+                        console.error(e.responseJSON.message);
                     });
             }
         };

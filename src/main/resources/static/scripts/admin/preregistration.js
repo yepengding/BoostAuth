@@ -8,7 +8,6 @@ class Preregistration {
 
     constructor() {
         this.$table = $('#table');
-        console.log()
     }
 
     run() {
@@ -48,12 +47,10 @@ class Preregistration {
                 $('#approve').prop('disabled', true);
                 $('#reject').prop('disabled', true);
                 const setSuccessView = () => {
-                    $('#message-box').removeClass().addClass("alert alert-success alert-dismissible fade show");
-                    $('#message-content').text(`Approved (${row.id}) successfully.`);
+                    Message.success(`Approved (${row.id}) successfully.`)
                 };
                 const setFailureView = () => {
-                    $('#message-box').removeClass().addClass("alert alert-danger alert-dismissible fade show");
-                    $('#message-content').text(`Failed to approve (${row.id}).`);
+                    Message.failure(`Failed to approve (${row.id}).`);
                     $('#approve').prop('disabled', false);
                     $('#reject').prop('disabled', false);
                 }
@@ -75,16 +72,14 @@ class Preregistration {
                 $('#approve').prop('disabled', true);
                 $('#reject').prop('disabled', true);
                 const setSuccessView = () => {
-                    $('#message-box').removeClass().addClass("alert alert-success alert-dismissible fade show");
-                    $('#message-content').text(`Rejected (${row.id}) successfully.`);
+                    Message.success(`Rejected (${row.id}) successfully.`);
                     $('#table').bootstrapTable('remove', {
                         field: 'id',
                         values: [row.id]
                     });
                 };
                 const setFailureView = () => {
-                    $('#message-box').removeClass().addClass("alert alert-danger alert-dismissible fade show");
-                    $('#message-content').text(`Failed to reject (${row.id}).`);
+                    Message.failure(`Failed to reject (${row.id}).`);
                     $('#approve').prop('disabled', false);
                     $('#reject').prop('disabled', false);
                 };
