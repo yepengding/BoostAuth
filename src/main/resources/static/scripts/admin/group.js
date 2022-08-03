@@ -10,6 +10,12 @@ const API = {
     deleteGroup: (id) => $.post(`/admin/group/delete/${id}`),
 }
 
+const GROUP_STATUS = {
+    ENABLED: 1,
+    DISABLED: 0,
+    DELETED: -1
+}
+
 class GroupCreate {
 
     constructor(name, description) {
@@ -58,6 +64,7 @@ class Group {
                             id: e.id,
                             name: e.name,
                             description: e.description,
+                            status: e.status
                         })
                     });
 
@@ -67,30 +74,81 @@ class Group {
     }
 
     #renderTable() {
-        const operateFormatter = (value, row, index) => [
-            // '<button type="button" id="disable" class="mx-2 btn btn-outline-warning">Disable</button>',
-            '<button type="button" id="delete" class="mx-2 btn btn-outline-danger">' +
-            '<i class="bi bi-trash-fill"></i>' +
-            '</button>',
-        ].join('');
+        const operateFormatter = (value, row, index) => {
+            const enableBtn =
+                `<button type="button" id="enable" class="mx-2 btn btn-outline-primary" ${row.status === GROUP_STATUS.DISABLED ? '' : 'disabled'}>` +
+                '<i class="bi bi-power"></i>' +
+                '</button>';
+
+            const disableBtn =
+                `<button type="button" id="disable" class="mx-2 btn btn-outline-secondary" ${row.status === GROUP_STATUS.ENABLED ? '' : 'disabled'}>` +
+                '<i class="bi bi-slash-circle"></i>' +
+                '</button>';
+
+            const deleteBtn =
+                '<button type="button" id="delete" class="mx-2 btn btn-outline-danger">' +
+                '<i class="bi bi-trash-fill"></i>' +
+                '</button>'
+            return [enableBtn, disableBtn, deleteBtn].join('');
+        }
 
         window.operateEvents = {
-            'click #disable': function (e, value, row, index) {
+            'click #enable': function (e, value, row, index) {
+                $('#enable').prop('disabled', true);
                 $('#disable').prop('disabled', true);
                 $('#delete').prop('disabled', true);
                 const setSuccessView = () => {
+                    $('#disable').prop('disabled', false);
+                    $('#delete').prop('disabled', false);
                     Message.success(`Disabled (${row.id}) successfully.`);
                 };
                 const setFailureView = () => {
                     Message.failure(`Failed to disable (${row.id}).`);
-                    $('#edit').prop('disabled', false);
+                    $('#enable').prop('disabled', false);
+                    $('#disable').prop('disabled', false);
                     $('#delete').prop('disabled', false);
-                }
+                };
+
+                API.enableGroup(row.id)
+                    .done((d) => {
+                        Assert.isTrue(d.code === CODE.SUCCESS, setFailureView);
+                        setSuccessView();
+                        $('#table').bootstrapTable('updateCell', {
+                            index: index,
+                            field: 'status',
+                            value: GROUP_STATUS.ENABLED
+                        })
+                    })
+                    .fail(e => {
+                        setFailureView();
+                        console.error(e.responseJSON.message);
+                    });
+            },
+            'click #disable': function (e, value, row, index) {
+                $('#enable').prop('disabled', true);
+                $('#disable').prop('disabled', true);
+                $('#delete').prop('disabled', true);
+                const setSuccessView = () => {
+                    $('#enable').prop('disabled', false);
+                    $('#delete').prop('disabled', false);
+                    Message.success(`Disabled (${row.id}) successfully.`);
+                };
+                const setFailureView = () => {
+                    Message.failure(`Failed to disable (${row.id}).`);
+                    $('#enable').prop('disabled', false);
+                    $('#disable').prop('disabled', false);
+                    $('#delete').prop('disabled', false);
+                };
 
                 API.disableGroup(row.id)
                     .done((d) => {
                         Assert.isTrue(d.code === CODE.SUCCESS, setFailureView);
                         setSuccessView();
+                        $('#table').bootstrapTable('updateCell', {
+                            index: index,
+                            field: 'status',
+                            value: GROUP_STATUS.DISABLED
+                        })
                     })
                     .fail(e => {
                         setFailureView();
@@ -98,14 +156,16 @@ class Group {
                     });
             },
             'click #delete': function (e, value, row, index) {
-                $('#edit').prop('disabled', true);
+                $('#enable').prop('disabled', true);
+                $('#disable').prop('disabled', true);
                 $('#delete').prop('disabled', true);
                 const setSuccessView = () => {
                     Message.success(`Deleted (${row.id}) successfully.`);
                 };
                 const setFailureView = () => {
                     Message.failure(`Failed to delete (${row.id}).`);
-                    $('#edit').prop('disabled', false);
+                    $('#enable').prop('disabled', false);
+                    $('#disable').prop('disabled', false);
                     $('#delete').prop('disabled', false);
                 }
 
@@ -140,6 +200,9 @@ class Group {
             }, {
                 field: 'description',
                 title: 'Description'
+            }, {
+                field: 'status',
+                title: 'Status'
             }, {
                 field: 'operate',
                 title: 'Operation',
