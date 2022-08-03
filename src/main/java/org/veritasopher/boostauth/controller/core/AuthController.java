@@ -2,6 +2,8 @@ package org.veritasopher.boostauth.controller.core;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -63,6 +65,11 @@ public class AuthController {
         // Identity should be at normal status
         Assert.isTrue(IdentityStatus.NORMAL.isTrue(identity.getStatus()), () -> {
             throw new AuthorizationException("Identity is abnormal.");
+        });
+
+        // Group should be at normal status
+        Assert.isTrue(groupService.getNormalById(identity.getGroupId()).isPresent(), () -> {
+            throw new AuthorizationException("Group is abnormal");
         });
 
         // Check password
@@ -155,18 +162,14 @@ public class AuthController {
      * @param authLogout logout information
      * @return message
      */
+    @Operation(security = @SecurityRequirement(name = "Authorization"))
     @PostMapping("/logout")
     public Response<String> logout(@Valid @RequestBody AuthLogout authLogout) {
-        Identity identity = identityService.getByUuid(authLogout.getUuid()).orElseThrow(() -> {
-            throw new AuthenticationException(ErrorCode.NOT_EXIST, "Identity does not exist.");
+        Token token = tokenService.getByContent(authLogout.getToken()).orElseThrow(() -> {
+            throw new AuthenticationException(ErrorCode.NOT_EXIST, "Token does not exist.");
         });
 
-        // Identity should be at normal status
-        Assert.isTrue(IdentityStatus.NORMAL.isTrue(identity.getStatus()), () -> {
-            throw new AuthorizationException("Identity is abnormal.");
-        });
-
-        Token token = identity.getToken();
+        token.setContent(null);
         token.setStatus(TokenStatus.INVALID.getValue());
         tokenService.update(token);
         return Response.success("Logout successfully.");

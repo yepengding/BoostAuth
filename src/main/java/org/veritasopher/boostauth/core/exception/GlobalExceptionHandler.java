@@ -5,6 +5,7 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -140,6 +141,20 @@ public class GlobalExceptionHandler {
     public Response<String> badRequestExceptionHandler(BadRequestException e) {
         logger.error(e.getMessage());
         return Response.failure(e.getCode(), e.getMessage());
+    }
+
+    /**
+     * Http Message Not Readable Exception Handler
+     *
+     * @param e exception
+     * @return response
+     */
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    @ExceptionHandler(value = HttpMessageNotReadableException.class)
+    public Response<String> httpMessageNotReadableExceptionHandler(HttpMessageNotReadableException e) {
+        logger.error(e.getMessage());
+        return Response.failure("Not readable body.");
     }
 
     /**

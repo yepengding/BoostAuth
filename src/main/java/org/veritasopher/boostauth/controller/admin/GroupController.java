@@ -3,8 +3,8 @@ package org.veritasopher.boostauth.controller.admin;
 import org.springframework.web.bind.annotation.*;
 import org.veritasopher.boostauth.core.dictionary.ErrorCode;
 import org.veritasopher.boostauth.core.dictionary.GroupStatus;
-import org.veritasopher.boostauth.core.exception.type.BadRequestException;
 import org.veritasopher.boostauth.core.exception.Assert;
+import org.veritasopher.boostauth.core.exception.type.BadRequestException;
 import org.veritasopher.boostauth.core.response.Response;
 import org.veritasopher.boostauth.model.Group;
 import org.veritasopher.boostauth.model.Identity;
@@ -76,6 +76,10 @@ public class GroupController {
 
     @PostMapping("/disable/{id}")
     public Response<Group> disable(@PathVariable("id") Long id) {
+        Assert.isTrue(id != 1, () -> {
+            throw new BadRequestException("Default group (id: 1) cannot be disabled.");
+        });
+
         Group group = groupService.getNormalById(id).orElseThrow(() -> {
             throw new BadRequestException(ErrorCode.NOT_EXIST, "Group does not exist or has been disabled.");
         });
@@ -85,6 +89,10 @@ public class GroupController {
 
     @PostMapping("/delete/{id}")
     public Response<Boolean> delete(@PathVariable("id") Long id) {
+        Assert.isTrue(id != 1, () -> {
+            throw new BadRequestException("Default group (id: 1) cannot be deleted.");
+        });
+
         Group group = groupService.getById(id).orElseThrow(() -> {
             throw new BadRequestException(ErrorCode.NOT_EXIST, "Group does not exist.");
         });
