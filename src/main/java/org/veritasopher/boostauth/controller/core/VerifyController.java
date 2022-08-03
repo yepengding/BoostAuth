@@ -8,11 +8,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.veritasopher.boostauth.config.GlobalKey;
-import org.veritasopher.boostauth.core.dictionary.ErrorCode;
 import org.veritasopher.boostauth.core.dictionary.IdentityStatus;
 import org.veritasopher.boostauth.core.dictionary.TokenStatus;
 import org.veritasopher.boostauth.core.exception.Assert;
-import org.veritasopher.boostauth.core.exception.SystemException;
+import org.veritasopher.boostauth.core.exception.type.AuthenticationException;
+import org.veritasopher.boostauth.core.exception.type.AuthorizationException;
+import org.veritasopher.boostauth.core.exception.type.BadRequestException;
 import org.veritasopher.boostauth.core.response.Response;
 import org.veritasopher.boostauth.model.Identity;
 import org.veritasopher.boostauth.model.vo.authreq.AuthVerify;
@@ -41,39 +42,45 @@ public class VerifyController {
      */
     @PostMapping("/verify")
     public Response<String> verifyToken(@Valid @RequestBody AuthVerify authVerify) {
-        Assert.notNull(authVerify.getToken(), "Token should not be null.");
         String token = authVerify.getToken().replaceFirst("Bearer ", "");
 
         // Basic validation
-        Assert.notNull(token, "No token information.");
-        Assert.isTrue(!"".equals(token), "Token is empty.");
+        Assert.notNull(token, () -> {
+            throw new BadRequestException("No token information.");
+        });
+        Assert.isTrue(!"".equals(token), () -> {
+            throw new BadRequestException("Token is empty.");
+        });
 
         // Parse JWT
         Algorithm algorithm = Algorithm.HMAC512(GlobalKey.JWT_SIGNING_KEY);
-        JWTVerifier verifier = JWT.require(algorithm)
-                .withIssuer(GlobalKey.ISSUER)
-                .build();
+        JWTVerifier verifier = JWT.require(algorithm).withIssuer(GlobalKey.ISSUER).build();
         DecodedJWT jwt = verifier.verify(token);
 
         // Expiration
-        Assert.isTrue(jwt.getExpiresAt().after(new Date()), "Token has expired.");
+        Assert.isTrue(jwt.getExpiresAt().after(new Date()), () -> {
+            throw new AuthorizationException("Token has expired.");
+        });
 
         // Corresponding Identity should exist
         Identity identity = identityService.getByUuid(jwt.getSubject()).orElseThrow(() -> {
-            throw new SystemException(ErrorCode.UNAUTHENTICATED.getValue(), "Identity is abnormal.");
+            throw new AuthorizationException("Identity is abnormal.");
         });
 
         // Identity should be at normal status
-        Assert.isTrue(IdentityStatus.NORMAL.isTrue(identity.getStatus()),
-                ErrorCode.UNAUTHORIZED.getValue(), "Identity is abnormal.");
+        Assert.isTrue(IdentityStatus.NORMAL.isTrue(identity.getStatus()), () -> {
+            throw new AuthorizationException("Identity is abnormal.");
+        });
 
         // Token should be at normal status
-        Assert.isTrue(TokenStatus.NORMAL.isTrue(identity.getToken().getStatus()),
-                ErrorCode.UNAUTHORIZED.getValue(), "Token is abnormal.");
+        Assert.isTrue(TokenStatus.NORMAL.isTrue(identity.getToken().getStatus()), () -> {
+            throw new AuthorizationException("Token is abnormal.");
+        });
 
         // Tokens should be matched
-        Assert.isTrue(identity.getToken().getContent().equals(authVerify.getToken()),
-                ErrorCode.UNAUTHENTICATED.getValue(), "Token is unauthenticated.");
+        Assert.isTrue(identity.getToken().getContent().equals(authVerify.getToken()), () -> {
+            throw new AuthorizationException("Token is unauthenticated.");
+        });
 
         return Response.success("Verified.", identity.getUuid());
     }

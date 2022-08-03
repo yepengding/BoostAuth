@@ -1,7 +1,7 @@
 package org.veritasopher.boostauth.utils;
 
 import com.google.gson.Gson;
-import org.veritasopher.boostauth.core.exception.InternalException;
+import org.veritasopher.boostauth.core.exception.type.InternalException;
 
 /**
  * Bean Utils

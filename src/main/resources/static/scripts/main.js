@@ -33,3 +33,10 @@ class OffsetPage {
 
 }
 
+class Assert {
+    static isTrue(expression, callback) {
+        if (!expression) {
+            callback();
+        }
+    }
+}

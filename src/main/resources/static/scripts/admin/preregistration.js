@@ -18,23 +18,22 @@ class Preregistration {
     #setPreregistrationData(params) {
         API.getAllPreregistration(new Page(params.data.offset))
             .done((d) => {
-                if (d.code === CODE.SUCCESS) {
-                    const data = d.data;
-                    const tableData = {
-                        rows: [],
-                        total: data.totalElements,
-                        totalNotFiltered: data.totalElements
-                    }
-                    data.content.forEach((e) => {
-                        tableData.rows.push({
-                            id: e.id,
-                            username: e.username,
-                            source: e.source,
-                            groupId: e.groupId
-                        })
-                    });
-                    params.success(tableData)
+                Assert.isTrue(d.code === CODE.SUCCESS, () => console.log("Failed to fetch all preregistration."));
+                const data = d.data;
+                const tableData = {
+                    rows: [],
+                    total: data.totalElements,
+                    totalNotFiltered: data.totalElements
                 }
+                data.content.forEach((e) => {
+                    tableData.rows.push({
+                        id: e.id,
+                        username: e.username,
+                        source: e.source,
+                        groupId: e.groupId
+                    })
+                });
+                params.success(tableData);
             });
     }
 
@@ -48,44 +47,56 @@ class Preregistration {
             'click #approve': function (e, value, row, index) {
                 $('#approve').prop('disabled', true);
                 $('#reject').prop('disabled', true);
+                const setSuccessView = () => {
+                    $('#message-box').removeClass().addClass("alert alert-success alert-dismissible fade show");
+                    $('#message-content').text(`Approved (${row.id}) successfully.`);
+                };
+                const setFailureView = () => {
+                    $('#message-box').removeClass().addClass("alert alert-danger alert-dismissible fade show");
+                    $('#message-content').text(`Failed to approve (${row.id}).`);
+                    $('#approve').prop('disabled', false);
+                    $('#reject').prop('disabled', false);
+                }
                 API.approveRegistration(row.id)
                     .done(d => {
-                        if (d.code === CODE.SUCCESS) {
-                            $('#message-box').removeClass().addClass("alert alert-success alert-dismissible fade show");
-                            $('#message-content').text(`Approved (${row.id}) successfully.`);
-                            $('#table').bootstrapTable('remove', {
-                                field: 'id',
-                                values: [row.id]
-                            })
-                        } else {
-                            $('#message-box').removeClass().addClass("alert alert-danger alert-dismissible fade show");
-                            $('#message-content').text(`Failed to approve (${row.id}).`);
-                            console.error(d.message);
-                            $('#approve').prop('disabled', false);
-                            $('#reject').prop('disabled', false);
-                        }
+                        Assert.isTrue(d.code === CODE.SUCCESS, setFailureView);
+                        setSuccessView();
+                        $('#table').bootstrapTable('remove', {
+                            field: 'id',
+                            values: [row.id]
+                        });
+                    })
+                    .fail(e => {
+                        setFailureView();
+                        console.error(e.responseJSON.message);
                     });
             },
             'click #reject': function (e, value, row, index) {
                 $('#approve').prop('disabled', true);
                 $('#reject').prop('disabled', true);
+                const setSuccessView = () => {
+                    $('#message-box').removeClass().addClass("alert alert-success alert-dismissible fade show");
+                    $('#message-content').text(`Rejected (${row.id}) successfully.`);
+                    $('#table').bootstrapTable('remove', {
+                        field: 'id',
+                        values: [row.id]
+                    });
+                };
+                const setFailureView = () => {
+                    $('#message-box').removeClass().addClass("alert alert-danger alert-dismissible fade show");
+                    $('#message-content').text(`Failed to reject (${row.id}).`);
+                    $('#approve').prop('disabled', false);
+                    $('#reject').prop('disabled', false);
+                };
+
                 API.rejectRegistration(row.id)
                     .done((d) => {
-                        if (d.code === CODE.SUCCESS) {
-                            $('#message-box').removeClass().addClass("alert alert-success alert-dismissible fade show");
-                            $('#message-content').text(`Rejected (${row.id}) successfully.`);
-                            $('#table').bootstrapTable('remove', {
-                                field: 'id',
-                                values: [row.id]
-                            })
-                        } else {
-                            $('#message-box').removeClass().addClass("alert alert-danger alert-dismissible fade show");
-                            $('#message-content').text(`Failed to reject (${row.id}).`);
-                            console.error(d.message);
-                            $('#approve').prop('disabled', false);
-                            $('#reject').prop('disabled', false);
-                        }
-                    });
+                        Assert.isTrue(d.code === CODE.SUCCESS, setFailureView);
+                        setSuccessView();
+                    }).fail(e => {
+                    setFailureView();
+                    console.error(e.responseJSON.message);
+                });
             }
         };
 

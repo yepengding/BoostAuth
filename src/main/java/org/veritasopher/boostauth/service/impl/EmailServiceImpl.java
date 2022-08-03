@@ -2,7 +2,7 @@ package org.veritasopher.boostauth.service.impl;
 
 import org.springframework.stereotype.Service;
 import org.veritasopher.boostauth.config.property.EmailSMTPConfig;
-import org.veritasopher.boostauth.core.exception.SystemException;
+import org.veritasopher.boostauth.core.exception.type.AuthenticationException;
 import org.veritasopher.boostauth.service.EmailService;
 
 import javax.annotation.Resource;
@@ -36,7 +36,7 @@ public class EmailServiceImpl implements EmailService {
 
             Transport.send(message);
         } catch (MessagingException e) {
-            throw new SystemException("Email sending failed.");
+            throw new AuthenticationException("Email sending failed.");
         }
 
     }
