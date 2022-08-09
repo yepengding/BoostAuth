@@ -9,6 +9,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -155,6 +156,20 @@ public class GlobalExceptionHandler {
     public Response<String> httpMessageNotReadableExceptionHandler(HttpMessageNotReadableException e) {
         logger.error(e.getMessage());
         return Response.failure("Not readable body.");
+    }
+
+    /**
+     * MissingServletRequestParameterException
+     *
+     * @param e exception
+     * @return response
+     */
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    @ExceptionHandler(value = MissingServletRequestParameterException.class)
+    public Response<String> missingServletRequestParameterExceptionHandler(MissingServletRequestParameterException e) {
+        logger.error(e.getMessage());
+        return Response.failure(e.getMessage());
     }
 
     /**
