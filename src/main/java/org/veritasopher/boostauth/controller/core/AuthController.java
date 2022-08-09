@@ -74,7 +74,7 @@ public class AuthController {
 
         // Check password
         Assert.isTrue(CryptoUtils.matchByBCrypt(authLogin.getPassword(), identity.getPassword()), () -> {
-            throw new AuthorizationException("Identity is abnormal.");
+            throw new AuthorizationException("Username or password is wrong.");
         });
 
         // Generate and set token
