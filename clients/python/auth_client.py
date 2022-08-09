@@ -1,5 +1,7 @@
 """
 Authentication Client
+
+:author Yepeng Ding
 """
 import requests
 
@@ -13,7 +15,7 @@ class AuthClient:
         """
         Construct a new 'AuthClient' object.
 
-        :param domain: BoostAuth domain
+        :param domain: BoostAuth domain (e.g., boostauth.org)
         """
         self.domain = domain
 
