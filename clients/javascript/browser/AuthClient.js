@@ -1,5 +1,6 @@
 /**
- * Authentication Client
+ * Authentication Client.
+ * ECMAScript 5
  *
  * @author Yepeng Ding
  */
@@ -55,7 +56,7 @@ class AuthClient {
     }
 
     /**
-     * Post method
+     * Post method.
      *
      * @param url url
      * @param data request payload

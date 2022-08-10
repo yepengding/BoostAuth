@@ -1,6 +1,8 @@
 """
 Authentication Client
 
+Python 3.6+
+
 :author Yepeng Ding
 """
 import requests
