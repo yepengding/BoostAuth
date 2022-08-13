@@ -1,4 +1,4 @@
-package org.veritasopher.boostauth.controller.core;
+package org.veritasopher.boostauth.controller.token;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -6,12 +6,12 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.veritasopher.boostauth.config.GlobalKey;
 import org.veritasopher.boostauth.core.dictionary.IdentityStatus;
 import org.veritasopher.boostauth.core.dictionary.TokenStatus;
 import org.veritasopher.boostauth.core.exception.Assert;
-import org.veritasopher.boostauth.core.exception.type.AuthenticationException;
 import org.veritasopher.boostauth.core.exception.type.AuthorizationException;
 import org.veritasopher.boostauth.core.exception.type.BadRequestException;
 import org.veritasopher.boostauth.core.response.Response;
@@ -29,6 +29,7 @@ import java.util.Date;
  * @author Yepeng Ding
  */
 @RestController
+@RequestMapping("/token")
 public class VerifyController {
 
     @Resource

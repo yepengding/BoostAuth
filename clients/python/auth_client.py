@@ -30,7 +30,7 @@ class AuthClient:
         :param source: source
         :return: JSON response
         """
-        return requests.post(f'{self.domain}/auth/login', json={
+        return requests.post(f'{self.domain}/token/auth/login', json={
             "username": username,
             "password": password,
             "source": source}).json()
@@ -42,7 +42,7 @@ class AuthClient:
         :param token: token obtained after login
         :return: JSON response
         """
-        return requests.post(f'{self.domain}/auth/logout', json={
+        return requests.post(f'{self.domain}/token/auth/logout', json={
             "token": token}).json()
 
     def verify(self, token: str) -> dict:
@@ -52,5 +52,5 @@ class AuthClient:
         :param token: token obtained after login
         :return: JSON response
         """
-        return requests.post(f'{self.domain}/verify', json={
+        return requests.post(f'{self.domain}/token/verify', json={
             "token": token}).json()

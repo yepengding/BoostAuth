@@ -33,7 +33,7 @@ class AuthClient
      */
     public function login(string $username, string $password, string $source): mixed
     {
-        return $this->post($this->domain . '/auth/login', array(
+        return $this->post($this->domain . '/token/auth/login', array(
             'username' => $username,
             'password' => $password,
             'source' => $source
@@ -48,7 +48,7 @@ class AuthClient
      */
     public function logout(string $token): mixed
     {
-        return $this->post($this->domain . '/auth/logout', array(
+        return $this->post($this->domain . '/token/auth/logout', array(
             'token' => $token
         ));
     }
@@ -61,7 +61,7 @@ class AuthClient
      */
     public function verify(string $token): mixed
     {
-        return $this->post($this->domain . '/verify', array(
+        return $this->post($this->domain . '/token/verify', array(
             'token' => $token
         ));
     }

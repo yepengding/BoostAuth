@@ -24,7 +24,7 @@ class AuthClient {
      * @returns {Promise<any>} promise object
      */
     login(username, password, source) {
-        return AuthClient.#post(this.domain + "/auth/login", {
+        return AuthClient.#post(this.domain + "/token/auth/login", {
             username,
             password,
             source
@@ -38,7 +38,7 @@ class AuthClient {
      * @returns {Promise<any>} promise object
      */
     logout(token) {
-        return AuthClient.#post(this.domain + "/auth/logout", {
+        return AuthClient.#post(this.domain + "/token/auth/logout", {
             token
         });
     }
@@ -50,7 +50,7 @@ class AuthClient {
      * @returns {Promise<any>} promise object
      */
     verify(token) {
-        return AuthClient.#post(this.domain + "/verify", {
+        return AuthClient.#post(this.domain + "/token/verify", {
             token
         });
     }

@@ -1,4 +1,4 @@
-package org.veritasopher.boostauth.controller.core;
+package org.veritasopher.boostauth.controller.token;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -37,7 +37,7 @@ import java.util.UUID;
  * @author Yepeng Ding
  */
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/token/auth")
 public class AuthController {
 
     @Resource
@@ -59,7 +59,7 @@ public class AuthController {
     @PostMapping("/login")
     public Response<String> login(@Valid @RequestBody AuthLogin authLogin) {
         Identity identity = identityService.getByUsernameAndSource(authLogin.getUsername(), authLogin.getSource()).orElseThrow(() -> {
-            throw new AuthenticationException("Username does not exist.");
+            throw new AuthenticationException(ErrorCode.NOT_EXIST, String.format("Username (%s) does not exist.", authLogin.getUsername()));
         });
 
         // Identity should be at normal status
@@ -74,7 +74,7 @@ public class AuthController {
 
         // Check password
         Assert.isTrue(CryptoUtils.matchByBCrypt(authLogin.getPassword(), identity.getPassword()), () -> {
-            throw new AuthorizationException("Username or password is wrong.");
+            throw new AuthorizationException(String.format("Username (%s) or password is wrong.", authLogin.getUsername()));
         });
 
         // Generate and set token

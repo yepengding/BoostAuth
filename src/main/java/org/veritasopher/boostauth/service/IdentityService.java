@@ -21,6 +21,8 @@ public interface IdentityService {
 
     Optional<Identity> getByUsernameAndSource(String username, String source);
 
+    Optional<Identity> getNormalByUsernameAndSource(String username, String source);
+
     Optional<Identity> getByUuid(String uuid);
 
     List<Identity> getAllNormalByGroup(long id);

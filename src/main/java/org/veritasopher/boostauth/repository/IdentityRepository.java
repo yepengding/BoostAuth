@@ -18,6 +18,8 @@ public interface IdentityRepository extends PagingAndSortingRepository<Identity,
 
     Optional<Identity> findByUsernameAndSource(String username, String source);
 
+    Optional<Identity> findByUsernameAndSourceAndStatus(String username, String source, int status);
+
     Optional<Identity> findByUuid(String uuid);
 
     List<Identity> findAllByGroupIdAndStatus(long groupId, int status);
