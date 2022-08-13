@@ -5,13 +5,13 @@ import com.auth0.jwt.algorithms.Algorithm;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.tags.Tags;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.veritasopher.boostauth.config.GlobalKey;
 import org.veritasopher.boostauth.core.dictionary.ErrorCode;
+import org.veritasopher.boostauth.core.dictionary.GroupStatus;
 import org.veritasopher.boostauth.core.dictionary.IdentityStatus;
 import org.veritasopher.boostauth.core.dictionary.TokenStatus;
 import org.veritasopher.boostauth.core.exception.Assert;
@@ -19,6 +19,7 @@ import org.veritasopher.boostauth.core.exception.type.AuthenticationException;
 import org.veritasopher.boostauth.core.exception.type.AuthorizationException;
 import org.veritasopher.boostauth.core.exception.type.BadRequestException;
 import org.veritasopher.boostauth.core.response.Response;
+import org.veritasopher.boostauth.model.Group;
 import org.veritasopher.boostauth.model.Identity;
 import org.veritasopher.boostauth.model.Token;
 import org.veritasopher.boostauth.model.vo.authreq.*;
@@ -71,7 +72,7 @@ public class AuthController {
         });
 
         // Group should be at normal status
-        Assert.isTrue(groupService.getNormalById(identity.getGroupId()).isPresent(), () -> {
+        Assert.isTrue(GroupStatus.NORMAL.isTrue(identity.getGroup().getStatus()), () -> {
             throw new AuthorizationException("Group is abnormal");
         });
 
@@ -115,7 +116,7 @@ public class AuthController {
         });
 
         // Check group existence
-        Assert.isTrue(groupService.getNormalById(authPreregister.getGroupId()).isPresent(), () -> {
+        Group group = groupService.getNormalById(authPreregister.getGroupId()).orElseThrow(() -> {
             throw new BadRequestException("Group does not exist.");
         });
 
@@ -124,7 +125,7 @@ public class AuthController {
         identity.setUsername(authPreregister.getUsername());
         identity.setPassword(CryptoUtils.encodeByBCrypt(authPreregister.getPassword()));
         identity.setSource(authPreregister.getSource());
-        identity.setGroupId(authPreregister.getGroupId());
+        identity.setGroup(group);
         identity.setStatus(IdentityStatus.PREREGISTER.getValue());
 
         Token token = new Token();

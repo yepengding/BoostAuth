@@ -10,6 +10,7 @@ import org.veritasopher.boostauth.core.dictionary.TokenStatus;
 import org.veritasopher.boostauth.core.exception.type.BadRequestException;
 import org.veritasopher.boostauth.core.exception.Assert;
 import org.veritasopher.boostauth.core.response.Response;
+import org.veritasopher.boostauth.model.Group;
 import org.veritasopher.boostauth.model.Identity;
 import org.veritasopher.boostauth.model.Token;
 import org.veritasopher.boostauth.model.vo.PageVO;
@@ -86,7 +87,7 @@ public class IdentityController {
         });
 
         // Check group existence
-        Assert.isTrue(groupService.getNormalById(identityRegisterReq.getGroupId()).isPresent(), () -> {
+        Group group = groupService.getNormalById(identityRegisterReq.getGroupId()).orElseThrow(() -> {
             throw new BadRequestException("Group does not exist.");
         });
 
@@ -95,7 +96,7 @@ public class IdentityController {
         identity.setUsername(identityRegisterReq.getUsername());
         identity.setPassword(CryptoUtils.encodeByBCrypt(identityRegisterReq.getPassword()));
         identity.setSource(identityRegisterReq.getSource());
-        identity.setGroupId(identityRegisterReq.getGroupId());
+        identity.setGroup(group);
         identity.setStatus(IdentityStatus.NORMAL.getValue());
 
         // Create one-to-one token

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.veritasopher.boostauth.config.GlobalKey;
+import org.veritasopher.boostauth.core.dictionary.GroupStatus;
 import org.veritasopher.boostauth.core.dictionary.IdentityStatus;
 import org.veritasopher.boostauth.core.dictionary.TokenStatus;
 import org.veritasopher.boostauth.core.exception.Assert;
@@ -37,9 +38,6 @@ public class VerifyController {
 
     @Resource
     private IdentityService identityService;
-
-    @Resource
-    private GroupService groupService;
 
     /**
      * Verify a token
@@ -90,8 +88,8 @@ public class VerifyController {
         });
 
         // Verify group status
-        Assert.isTrue(groupService.getNormalById(identity.getGroupId()).isPresent(), () -> {
-            throw new AuthorizationException("Group is abnormal.");
+        Assert.isTrue(GroupStatus.NORMAL.isTrue(identity.getGroup().getStatus()), () -> {
+            throw new AuthorizationException("Group does not exist.");
         });
 
         return Response.success("Verified.", identity.getUuid());
