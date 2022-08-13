@@ -22,7 +22,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Resource
     private BoostAuthConfig boostAuthConfig;
 
-    @Autowired
+    @Resource
     private AdminAuthenticationProvider authProvider;
 
     @Override
@@ -31,16 +31,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             security
                     .authorizeRequests()
                     .antMatchers("/swagger-ui/**", "/v3/**", "/admin/**")
-                    .authenticated()
-                    .antMatchers("/**").permitAll()
-                    .and().httpBasic()
+                    .hasAuthority("ADMIN")
+//                    .authenticated()
+//                    .antMatchers("/**").permitAll()
+                    .and()
+                    .httpBasic()
                     .and()
                     .csrf().disable();
         } else {
             security
                     .authorizeRequests()
                     .antMatchers("/admin/**")
-                    .authenticated()
+                    .hasAuthority("ADMIN")
+//                    .authenticated()
                     .and()
                     .httpBasic()
                     .and()

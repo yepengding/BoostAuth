@@ -17,7 +17,7 @@ token verification.
 - [x] Admin control
 - [x] Group control
 - [x] Docker-based deployment
-- [ ] Clients in multiple languages (Python, JavaScript, etc.)
+- [ ] Clients in multiple languages (Python, JavaScript, PHP, etc.)
 
 ## Setup
 
