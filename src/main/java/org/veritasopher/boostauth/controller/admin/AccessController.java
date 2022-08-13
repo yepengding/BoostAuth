@@ -1,5 +1,6 @@
 package org.veritasopher.boostauth.controller.admin;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +24,7 @@ import javax.validation.Valid;
  *
  * @author Yepeng Ding
  */
+@Tag(name = "Admin Access Control")
 @RestController("adminAccessController")
 @RequestMapping("/admin/access")
 public class AccessController {

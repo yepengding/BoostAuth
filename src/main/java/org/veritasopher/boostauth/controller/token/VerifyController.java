@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,7 @@ import org.veritasopher.boostauth.core.exception.type.BadRequestException;
 import org.veritasopher.boostauth.core.response.Response;
 import org.veritasopher.boostauth.model.Identity;
 import org.veritasopher.boostauth.model.vo.authreq.AuthVerify;
+import org.veritasopher.boostauth.service.GroupService;
 import org.veritasopher.boostauth.service.IdentityService;
 
 import javax.annotation.Resource;
@@ -28,12 +30,16 @@ import java.util.Date;
  *
  * @author Yepeng Ding
  */
+@Tag(name = "Token Authentication")
 @RestController
 @RequestMapping("/token")
 public class VerifyController {
 
     @Resource
     private IdentityService identityService;
+
+    @Resource
+    private GroupService groupService;
 
     /**
      * Verify a token
@@ -81,6 +87,11 @@ public class VerifyController {
         // Tokens should be matched
         Assert.isTrue(identity.getToken().getContent().equals(authVerify.getToken()), () -> {
             throw new AuthorizationException("Token is unauthenticated.");
+        });
+
+        // Verify group status
+        Assert.isTrue(groupService.getNormalById(identity.getGroupId()).isPresent(), () -> {
+            throw new AuthorizationException("Group is abnormal.");
         });
 
         return Response.success("Verified.", identity.getUuid());

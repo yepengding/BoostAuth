@@ -1,5 +1,6 @@
 package org.veritasopher.boostauth.controller.basic;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,10 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author Yepeng Ding
  */
-@RestController
+@Tag(name = "Basic Access Authentication")
+@RestController("basicAuthController")
 @RequestMapping("/basic")
-public class BasicAuthController {
-
+public class AuthController {
 
     @GetMapping("/login")
     public ResponseEntity<String> login() {

@@ -1,5 +1,6 @@
 package org.veritasopher.boostauth.controller.admin;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 import org.veritasopher.boostauth.core.dictionary.ErrorCode;
 import org.veritasopher.boostauth.core.dictionary.GroupStatus;
@@ -22,6 +23,7 @@ import java.util.List;
  *
  * @author Yepeng Ding
  */
+@Tag(name = "Admin Group Control")
 @RestController("adminGroupController")
 @RequestMapping("/admin/group")
 public class GroupController {

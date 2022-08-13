@@ -1,5 +1,6 @@
 package org.veritasopher.boostauth.controller.admin;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
@@ -25,10 +26,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 /**
- * Admin Controller
+ * Admin Identity Controller
  *
  * @author Yepeng Ding
  */
+@Tag(name = "Admin Identity Control")
 @RestController("adminIdentityController")
 @RequestMapping("/admin/identity")
 public class IdentityController {
