@@ -1,10 +1,11 @@
 package org.veritasopher.boostauth.controller.admin;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 import org.veritasopher.boostauth.core.dictionary.ErrorCode;
 import org.veritasopher.boostauth.core.dictionary.GroupStatus;
 import org.veritasopher.boostauth.core.exception.Assert;
-import org.veritasopher.boostauth.core.exception.SystemException;
+import org.veritasopher.boostauth.core.exception.type.BadRequestException;
 import org.veritasopher.boostauth.core.response.Response;
 import org.veritasopher.boostauth.model.Group;
 import org.veritasopher.boostauth.model.Identity;
@@ -22,6 +23,7 @@ import java.util.List;
  *
  * @author Yepeng Ding
  */
+@Tag(name = "Admin Group Control")
 @RestController("adminGroupController")
 @RequestMapping("/admin/group")
 public class GroupController {
@@ -34,8 +36,9 @@ public class GroupController {
 
     @PostMapping("/create")
     public Response<Group> create(@Valid @RequestBody GroupCreateReq groupCreateReq) {
-        Assert.isTrue(groupService.getByName(groupCreateReq.getName()).isEmpty(), ErrorCode.EXIST.getValue(),
-                "Group name has been used.");
+        Assert.isTrue(groupService.getByName(groupCreateReq.getName()).isEmpty(), () ->
+                new BadRequestException(ErrorCode.EXIST, "Group name has been used.")
+        );
 
         Group group = BeanUtils.copyBean(groupCreateReq, Group.class);
         group.setStatus(GroupStatus.NORMAL.getValue());
@@ -45,8 +48,8 @@ public class GroupController {
 
     @GetMapping("/{id}")
     public Response<List<Identity>> getGroupIdentities(@PathVariable("id") long id) {
-        Assert.isTrue(groupService.getNormalById(id).isPresent(),
-                "Group does not exist.");
+        Assert.isTrue(groupService.getNormalById(id).isPresent(), () ->
+                new BadRequestException(ErrorCode.NOT_EXIST, "Group does not exist."));
 
         return Response.success(identityService.getAllNormalByGroup(id));
     }
@@ -64,17 +67,23 @@ public class GroupController {
     @PostMapping("/enable/{id}")
     public Response<Group> enable(@PathVariable("id") Long id) {
         Group group = groupService.getById(id).orElseThrow(() -> {
-            throw new SystemException("Group does not exist.");
+            throw new BadRequestException(ErrorCode.NOT_EXIST, "Group does not exist.");
         });
-        Assert.isTrue(GroupStatus.DISABLED.isTrue(group.getStatus()), "Group has been enabled.");
+        Assert.isTrue(GroupStatus.DISABLED.isTrue(group.getStatus()), () ->
+                new BadRequestException("Group has been enabled."));
+
         group.setStatus(GroupStatus.NORMAL.getValue());
         return Response.success(groupService.update(group));
     }
 
     @PostMapping("/disable/{id}")
     public Response<Group> disable(@PathVariable("id") Long id) {
+        Assert.isTrue(id != 1, () -> {
+            throw new BadRequestException("Default group (id: 1) cannot be disabled.");
+        });
+
         Group group = groupService.getNormalById(id).orElseThrow(() -> {
-            throw new SystemException("Group does not exist or has been disabled.");
+            throw new BadRequestException(ErrorCode.NOT_EXIST, "Group does not exist or has been disabled.");
         });
         group.setStatus(GroupStatus.DISABLED.getValue());
         return Response.success(groupService.update(group));
@@ -82,8 +91,12 @@ public class GroupController {
 
     @PostMapping("/delete/{id}")
     public Response<Boolean> delete(@PathVariable("id") Long id) {
+        Assert.isTrue(id != 1, () -> {
+            throw new BadRequestException("Default group (id: 1) cannot be deleted.");
+        });
+
         Group group = groupService.getById(id).orElseThrow(() -> {
-            throw new SystemException("Group does not exist.");
+            throw new BadRequestException(ErrorCode.NOT_EXIST, "Group does not exist.");
         });
         return Response.success(groupService.delete(group));
     }

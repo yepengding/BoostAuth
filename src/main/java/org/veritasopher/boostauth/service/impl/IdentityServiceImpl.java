@@ -44,6 +44,11 @@ public class IdentityServiceImpl implements IdentityService {
     }
 
     @Override
+    public Optional<Identity> getNormalByUsernameAndSource(String username, String source) {
+        return identityRepository.findByUsernameAndSourceAndStatus(username, source, IdentityStatus.NORMAL.getValue());
+    }
+
+    @Override
     public Optional<Identity> getByUuid(String uuid) {
         return identityRepository.findByUuid(uuid);
     }

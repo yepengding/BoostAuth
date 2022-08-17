@@ -41,8 +41,9 @@ public class Identity {
     @Column(name = "source")
     private String source;
 
-    @Column(name = "group_id")
-    private Long groupId;
+    @ManyToOne
+    @JoinColumn(name = "group_id")
+    private Group group;
 
     @Column(name = "create_date")
     @CreatedDate

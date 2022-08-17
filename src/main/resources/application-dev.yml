@@ -5,6 +5,8 @@ spring:
     password: boostauth
 
 logging:
+  pattern:
+    dateformat: yyyy-MM-dd HH:mm:ss.SSS
   file:
     name: ./logs/boostauth.log
 

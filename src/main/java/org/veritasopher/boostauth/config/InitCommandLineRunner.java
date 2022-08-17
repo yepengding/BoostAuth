@@ -9,7 +9,6 @@ import org.veritasopher.boostauth.model.Group;
 import org.veritasopher.boostauth.service.GroupService;
 
 import javax.annotation.Resource;
-import java.util.Optional;
 
 
 /**

@@ -5,6 +5,8 @@ spring:
     password: boostauthadminpwd
 
 logging:
+  pattern:
+    dateformat: yyyy-MM-dd HH:mm:ss.SSS,Asia/Tokyo
   file:
     name: ./logs/boostauth.log
 

@@ -1,12 +1,13 @@
 package org.veritasopher.boostauth.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.veritasopher.boostauth.config.property.BoostAuthConfig;
+import org.veritasopher.boostauth.core.provider.auth.AdminAuthenticationProvider;
+import org.veritasopher.boostauth.core.provider.auth.IdentityAuthenticationProvider;
 
 import javax.annotation.Resource;
 
@@ -22,8 +23,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Resource
     private BoostAuthConfig boostAuthConfig;
 
-    @Autowired
-    private AdminAuthenticationProvider authProvider;
+    @Resource
+    private AdminAuthenticationProvider adminAuthenticationProvider;
+
+    @Resource
+    private IdentityAuthenticationProvider identityAuthenticationProvider;
 
     @Override
     protected void configure(HttpSecurity security) throws Exception {
@@ -31,16 +35,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             security
                     .authorizeRequests()
                     .antMatchers("/swagger-ui/**", "/v3/**", "/admin/**")
-                    .authenticated()
-                    .antMatchers("/**").permitAll()
-                    .and().httpBasic()
+                    .hasAuthority("ADMIN")
+                    .antMatchers("/basic/**")
+                    .hasAuthority("USER")
+                    .and()
+                    .httpBasic()
                     .and()
                     .csrf().disable();
         } else {
             security
                     .authorizeRequests()
                     .antMatchers("/admin/**")
-                    .authenticated()
+                    .hasAuthority("ADMIN")
+                    .antMatchers("/basic/**")
+                    .hasAuthority("USER")
                     .and()
                     .httpBasic()
                     .and()
@@ -51,6 +59,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(authProvider);
+        auth.authenticationProvider(adminAuthenticationProvider)
+                .authenticationProvider(identityAuthenticationProvider);
     }
 }

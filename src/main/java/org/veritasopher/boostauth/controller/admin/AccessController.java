@@ -1,12 +1,13 @@
 package org.veritasopher.boostauth.controller.admin;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.veritasopher.boostauth.config.property.BoostAuthConfig;
 import org.veritasopher.boostauth.core.dictionary.AdminStatus;
-import org.veritasopher.boostauth.core.dictionary.ErrorCode;
+import org.veritasopher.boostauth.core.exception.type.BadRequestException;
 import org.veritasopher.boostauth.core.exception.Assert;
 import org.veritasopher.boostauth.core.response.Response;
 import org.veritasopher.boostauth.model.Admin;
@@ -23,6 +24,7 @@ import javax.validation.Valid;
  *
  * @author Yepeng Ding
  */
+@Tag(name = "Admin Access Control")
 @RestController("adminAccessController")
 @RequestMapping("/admin/access")
 public class AccessController {
@@ -36,13 +38,19 @@ public class AccessController {
     @PostMapping("/register")
     public Response<Admin> register(@Valid @RequestBody AdminRegisterReq adminRegisterReq) {
         // Check security
-        Assert.isTrue(boostAuthConfig.getSecurity().equals(adminRegisterReq.getSecurity()), ErrorCode.UNAUTHORIZED.getValue(), "Unauthenticated registration.");
+        Assert.isTrue(boostAuthConfig.getSecurity().equals(adminRegisterReq.getSecurity()), () -> {
+            throw new BadRequestException("Unrecognized registration.");
+        });
 
         // Check not super admin username
-        Assert.isTrue(!boostAuthConfig.getAdminUsername().equals(adminRegisterReq.getUsername()), ErrorCode.EXIST.getValue(), "Username exists.");
+        Assert.isTrue(!boostAuthConfig.getAdminUsername().equals(adminRegisterReq.getUsername()), () -> {
+            throw new BadRequestException("Username exists.");
+        });
 
         // Check existence
-        Assert.isTrue(adminService.getByUsername(adminRegisterReq.getUsername()).isEmpty(), ErrorCode.EXIST.getValue(), "Username exists.");
+        Assert.isTrue(adminService.getByUsername(adminRegisterReq.getUsername()).isEmpty(), () -> {
+            throw new BadRequestException("Username exists.");
+        });
 
         // Instantiate admin
         Admin admin = BeanUtils.copyBean(adminRegisterReq, Admin.class);

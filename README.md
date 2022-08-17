@@ -4,12 +4,12 @@ Authentication system for **Boost Plan**. The **Boost Plan** is a scaffold for b
 time.
 
 BoostAuth provides a unified authentication and authorization service for all other systems provided in the Boost Plan.
-It uses JWT (JSON Web Token) style for the main functionalities, including: register, login, logout, email service, and
-token verification.
+It supports multiple authentication methods with a built-in administration system.
 
 ## Features
 
 - [x] Token-based authentication and authorization
+- [x] Basic access authentication ([RFC 7617](https://datatracker.ietf.org/doc/html/rfc7617))
 - [x] Fully-fledged access control
 - [x] Management system with frontend
 - [x] Delegation support
@@ -17,6 +17,7 @@ token verification.
 - [x] Admin control
 - [x] Group control
 - [x] Docker-based deployment
+- [ ] Clients in multiple languages (Python, JavaScript, PHP, etc.)
 
 ## Setup
 
@@ -45,14 +46,14 @@ mvn clean package -D maven.test.skip=true -P [local/dev/prod]
 
 domain:9000/swagger-ui.html
 
-Authentication logic:
+Token-Based authentication logic:
 
-1. */auth/preregister*  Generate `Identity` with **UUID** and `Token`
-2. */auth/register* Make `Identity` valid
-3. */auth/login* Sign in
-4. */verify* Verify a token
-5. */auth/logout* Sign out
-6. */auth/reset/password* Reset password
+1. */token/auth/preregister*  Generate `Identity` with **UUID** and `Token`
+2. */token/auth/register* Make `Identity` valid
+3. */token/auth/login* Sign in
+4. */token/verify* Verify a token
+5. */token/auth/logout* Sign out
+6. */token/auth/reset/password* Reset password
 
 ## Frontend
 

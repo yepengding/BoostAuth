@@ -44,8 +44,4 @@ public class Response<T> implements Serializable {
         return failure(ResponseCode.FAILURE.getValue(), message);
     }
 
-    public String toString() {
-        return "{code:\"" + code + "\", message:\"" + message + "\", data:\"" + (data != null ? data.toString() : null) + "\"}";
-    }
-
 }

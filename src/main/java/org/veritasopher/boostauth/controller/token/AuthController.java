@@ -1,18 +1,25 @@
-package org.veritasopher.boostauth.controller.core;
+package org.veritasopher.boostauth.controller.token;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.veritasopher.boostauth.config.GlobalKey;
 import org.veritasopher.boostauth.core.dictionary.ErrorCode;
+import org.veritasopher.boostauth.core.dictionary.GroupStatus;
 import org.veritasopher.boostauth.core.dictionary.IdentityStatus;
 import org.veritasopher.boostauth.core.dictionary.TokenStatus;
 import org.veritasopher.boostauth.core.exception.Assert;
-import org.veritasopher.boostauth.core.exception.SystemException;
+import org.veritasopher.boostauth.core.exception.type.AuthenticationException;
+import org.veritasopher.boostauth.core.exception.type.AuthorizationException;
+import org.veritasopher.boostauth.core.exception.type.BadRequestException;
 import org.veritasopher.boostauth.core.response.Response;
+import org.veritasopher.boostauth.model.Group;
 import org.veritasopher.boostauth.model.Identity;
 import org.veritasopher.boostauth.model.Token;
 import org.veritasopher.boostauth.model.vo.authreq.*;
@@ -32,8 +39,9 @@ import java.util.UUID;
  *
  * @author Yepeng Ding
  */
-@RestController
-@RequestMapping("/auth")
+@Tag(name = "Token Authentication")
+@RestController("tokenAuthController")
+@RequestMapping("/token/auth")
 public class AuthController {
 
     @Resource
@@ -55,16 +63,23 @@ public class AuthController {
     @PostMapping("/login")
     public Response<String> login(@Valid @RequestBody AuthLogin authLogin) {
         Identity identity = identityService.getByUsernameAndSource(authLogin.getUsername(), authLogin.getSource()).orElseThrow(() -> {
-            throw new SystemException(ErrorCode.NOT_EXIST.getValue(), "Username does not exist.");
+            throw new AuthenticationException(ErrorCode.NOT_EXIST, String.format("Username (%s) does not exist.", authLogin.getUsername()));
         });
 
         // Identity should be at normal status
-        Assert.isTrue(IdentityStatus.NORMAL.isTrue(identity.getStatus()),
-                ErrorCode.UNAUTHORIZED.getValue(), "Identity is abnormal.");
+        Assert.isTrue(IdentityStatus.NORMAL.isTrue(identity.getStatus()), () -> {
+            throw new AuthorizationException("Identity is abnormal.");
+        });
+
+        // Group should be at normal status
+        Assert.isTrue(GroupStatus.NORMAL.isTrue(identity.getGroup().getStatus()), () -> {
+            throw new AuthorizationException("Group is abnormal");
+        });
 
         // Check password
-        Assert.isTrue(CryptoUtils.matchByBCrypt(authLogin.getPassword(), identity.getPassword()),
-                ErrorCode.UNAUTHENTICATED.getValue(), "Wrong password.");
+        Assert.isTrue(CryptoUtils.matchByBCrypt(authLogin.getPassword(), identity.getPassword()), () -> {
+            throw new AuthorizationException(String.format("Username (%s) or password is wrong.", authLogin.getUsername()));
+        });
 
         // Generate and set token
         Token token = identity.getToken();
@@ -79,11 +94,7 @@ public class AuthController {
         Date expiryDate = calendar.getTime();
         token.setIssuingDate(now);
         token.setExpiryDate(expiryDate);
-        token.setContent("Bearer " + JWT.create()
-                .withIssuer(GlobalKey.ISSUER)
-                .withSubject(identity.getUuid())
-                .withExpiresAt(expiryDate)
-                .sign(algorithm));
+        token.setContent("Bearer " + JWT.create().withIssuer(GlobalKey.ISSUER).withSubject(identity.getUuid()).withExpiresAt(expiryDate).sign(algorithm));
         token.setStatus(TokenStatus.NORMAL.getValue());
         tokenService.update(token);
         return Response.success("Login successfully.", token.getContent());
@@ -100,19 +111,21 @@ public class AuthController {
     @PostMapping("/preregister")
     public Response<String> preregister(@Valid @RequestBody AuthPreregister authPreregister) {
         // Check existence.
-        Assert.isTrue(identityService.getByUsernameAndSource(authPreregister.getUsername(), authPreregister.getSource()).isEmpty(),
-                ErrorCode.EXIST.getValue(), "Username exists.");
+        Assert.isTrue(identityService.getByUsernameAndSource(authPreregister.getUsername(), authPreregister.getSource()).isEmpty(), () -> {
+            throw new BadRequestException(ErrorCode.EXIST, "Username exists.");
+        });
 
         // Check group existence
-        Assert.isTrue(groupService.getNormalById(authPreregister.getGroupId()).isPresent(),
-                "Group does not exist.");
+        Group group = groupService.getNormalById(authPreregister.getGroupId()).orElseThrow(() -> {
+            throw new BadRequestException("Group does not exist.");
+        });
 
         Identity identity = new Identity();
         identity.setUuid(UUID.randomUUID().toString());
         identity.setUsername(authPreregister.getUsername());
         identity.setPassword(CryptoUtils.encodeByBCrypt(authPreregister.getPassword()));
         identity.setSource(authPreregister.getSource());
-        identity.setGroupId(authPreregister.getGroupId());
+        identity.setGroup(group);
         identity.setStatus(IdentityStatus.PREREGISTER.getValue());
 
         Token token = new Token();
@@ -134,12 +147,13 @@ public class AuthController {
     @PostMapping("/register")
     public Response<String> register(@Valid @RequestBody AuthRegister authRegister) {
         Identity identity = identityService.getByUuid(authRegister.getUuid()).orElseThrow(() -> {
-            throw new SystemException(ErrorCode.NOT_EXIST.getValue(), "Register failed because identity does not exist.");
+            throw new AuthenticationException(ErrorCode.NOT_EXIST, "Register failed because identity does not exist.");
         });
 
         // Identity should be at preregister status
-        Assert.isTrue(IdentityStatus.PREREGISTER.isTrue(identity.getStatus()),
-                ErrorCode.UNAUTHORIZED.getValue(), "Identity is abnormal.");
+        Assert.isTrue(IdentityStatus.PREREGISTER.isTrue(identity.getStatus()), () -> {
+            throw new AuthorizationException("Identity is abnormal.");
+        });
 
         identity.setStatus(IdentityStatus.NORMAL.getValue());
         identityService.update(identity);
@@ -152,17 +166,14 @@ public class AuthController {
      * @param authLogout logout information
      * @return message
      */
+    @Operation(security = @SecurityRequirement(name = "Authorization"))
     @PostMapping("/logout")
     public Response<String> logout(@Valid @RequestBody AuthLogout authLogout) {
-        Identity identity = identityService.getByUuid(authLogout.getUuid()).orElseThrow(() -> {
-            throw new SystemException(ErrorCode.NOT_EXIST.getValue(), "Identity does not exist.");
+        Token token = tokenService.getByContent(authLogout.getToken()).orElseThrow(() -> {
+            throw new AuthenticationException(ErrorCode.NOT_EXIST, "Token does not exist.");
         });
 
-        // Identity should be at normal status
-        Assert.isTrue(IdentityStatus.NORMAL.isTrue(identity.getStatus()),
-                ErrorCode.UNAUTHORIZED.getValue(), "Identity is abnormal.");
-
-        Token token = identity.getToken();
+        token.setContent(null);
         token.setStatus(TokenStatus.INVALID.getValue());
         tokenService.update(token);
         return Response.success("Logout successfully.");
@@ -177,16 +188,18 @@ public class AuthController {
     @PostMapping("/reset/password")
     public Response<String> resetPwd(@Valid @RequestBody AuthResetPwd authResetPwd) {
         Identity identity = identityService.getByUuid(authResetPwd.getUuid()).orElseThrow(() -> {
-            throw new SystemException(ErrorCode.NOT_EXIST.getValue(), "Identity does not exist.");
+            throw new AuthenticationException(ErrorCode.NOT_EXIST, "Identity does not exist.");
         });
 
         // Identity should be at normal status
-        Assert.isTrue(IdentityStatus.NORMAL.isTrue(identity.getStatus()),
-                ErrorCode.UNAUTHORIZED.getValue(), "Identity is abnormal.");
+        Assert.isTrue(IdentityStatus.NORMAL.isTrue(identity.getStatus()), () -> {
+            throw new AuthorizationException("Identity is abnormal.");
+        });
 
         // Check password
-        Assert.isTrue(CryptoUtils.matchByBCrypt(authResetPwd.getOldPassword(), identity.getPassword()),
-                ErrorCode.UNAUTHENTICATED.getValue(), "Wrong password.");
+        Assert.isTrue(CryptoUtils.matchByBCrypt(authResetPwd.getOldPassword(), identity.getPassword()), () -> {
+            throw new AuthorizationException("Wrong password.");
+        });
 
         // Update password
         identity.setPassword(CryptoUtils.encodeByBCrypt(authResetPwd.getNewPassword()));

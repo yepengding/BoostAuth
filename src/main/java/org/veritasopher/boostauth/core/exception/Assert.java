@@ -1,7 +1,8 @@
 package org.veritasopher.boostauth.core.exception;
 
 import org.springframework.lang.Nullable;
-import org.springframework.util.ObjectUtils;
+
+import java.util.function.Supplier;
 
 /**
  * Assert Util for Exception Handling
@@ -9,45 +10,17 @@ import org.springframework.util.ObjectUtils;
  * @author Yepeng Ding
  */
 public class Assert {
-    public static void isNull(@Nullable Object object, String message) {
-        if (object != null) {
-            throw new SystemException(message);
-        }
-    }
 
-    public static void isNull(@Nullable Object object, int code, String message) {
-        if (object != null) {
-            throw new SystemException(code, message);
-        }
-    }
-
-    public static void notNull(@Nullable Object object, String message) {
+    public static <X extends Throwable> void notNull(@Nullable Object object, Supplier<? extends X> exceptionSupplier) throws X {
         if (object == null) {
-            throw new SystemException(message);
+            throw exceptionSupplier.get();
         }
     }
 
-    public static void notNull(@Nullable Object object, int code, String message) {
-        if (object == null) {
-            throw new SystemException(code, message);
-        }
-    }
-
-    public static void isTrue(boolean expression, String message) {
+    public static <X extends Throwable> void isTrue(boolean expression, Supplier<? extends X> exceptionSupplier) throws X {
         if (!expression) {
-            throw new SystemException(message);
+            throw exceptionSupplier.get();
         }
     }
 
-    public static void isTrue(boolean expression, int code, String message) {
-        if (!expression) {
-            throw new SystemException(code, message);
-        }
-    }
-
-    public static void notEmpty(@Nullable Object[] array, String message) {
-        if (ObjectUtils.isEmpty(array)) {
-            throw new SystemException(message);
-        }
-    }
 }
