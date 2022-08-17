@@ -17,7 +17,7 @@ It supports multiple authentication methods with a built-in administration syste
 - [x] Admin control
 - [x] Group control
 - [x] Docker-based deployment
-- [ ] Clients in multiple languages (Python, JavaScript, PHP, etc.)
+- [x] Clients in multiple languages (Python, JavaScript, PHP)
 
 ## Setup
 
@@ -46,7 +46,12 @@ mvn clean package -D maven.test.skip=true -P [local/dev/prod]
 
 domain:9000/swagger-ui.html
 
-Token-Based authentication logic:
+## Basic Access Authentication
+
+- Authentication endpoint: GET */basic/login*
+- Header: *Authorization: Basic \<username>:\<source>:\<password>*
+
+## Token-Based authentication
 
 1. */token/auth/preregister*  Generate `Identity` with **UUID** and `Token`
 2. */token/auth/register* Make `Identity` valid
