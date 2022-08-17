@@ -10,6 +10,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
+import org.veritasopher.boostauth.core.dictionary.GroupStatus;
 import org.veritasopher.boostauth.core.exception.Assert;
 import org.veritasopher.boostauth.model.Identity;
 import org.veritasopher.boostauth.service.IdentityService;
@@ -66,6 +67,9 @@ public class IdentityAuthenticationProvider implements AuthenticationProvider {
         if (CryptoUtils.matchByBCrypt(password, identity.getPassword())) {
             List<GrantedAuthority> authorities = new ArrayList<>();
             authorities.add(new SimpleGrantedAuthority("USER"));
+
+            // Set identity
+            request.setAttribute("identity", identity);
             return new UsernamePasswordAuthenticationToken(
                     username, password, authorities);
         } else {
