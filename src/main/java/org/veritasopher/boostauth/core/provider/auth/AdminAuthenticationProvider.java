@@ -18,6 +18,7 @@ import org.veritasopher.boostauth.utils.CryptoUtils;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -42,7 +43,9 @@ public class AdminAuthenticationProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         // Skip non-admin requests
-        if (!request.getRequestURI().startsWith("/admin/")) {
+        String requestURI = request.getRequestURI();
+        String[] adminURIs = {"/swagger-ui/", "/v3/", "/admin/"};
+        if (Arrays.stream(adminURIs).noneMatch(requestURI::startsWith)) {
             return null;
         }
 
