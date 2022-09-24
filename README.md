@@ -17,7 +17,8 @@ It supports multiple authentication methods with a built-in administration syste
 - [x] Admin control
 - [x] Group control
 - [x] Docker-based deployment
-- [x] Clients in multiple languages (Python, JavaScript, PHP)
+- [x] Clients in multiple languages (e.g., Python, JavaScript, PHP)
+- [x] Integration with third-party services (e.g., Next Cloud)
 
 ## Setup
 
