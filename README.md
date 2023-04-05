@@ -64,6 +64,9 @@ domain:9000/swagger-ui.html
 
 ## Frontend
 
+### User
+- Preregistration: `/view/preregister`
+
 ### Admin
 
 - Manage preregistration: `/admin/view/manage/preregister`

@@ -14,7 +14,7 @@ import org.veritasopher.boostauth.model.Group;
 import org.veritasopher.boostauth.model.Identity;
 import org.veritasopher.boostauth.model.Token;
 import org.veritasopher.boostauth.model.vo.PageVO;
-import org.veritasopher.boostauth.model.vo.adminreq.IdentityRegisterReq;
+import org.veritasopher.boostauth.model.vo.adminreq.IdentityPreregisterReq;
 import org.veritasopher.boostauth.service.GroupService;
 import org.veritasopher.boostauth.service.IdentityService;
 import org.veritasopher.boostauth.service.TokenService;
@@ -22,8 +22,6 @@ import org.veritasopher.boostauth.utils.CryptoUtils;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 /**
@@ -79,23 +77,22 @@ public class IdentityController {
         return Response.success(identityService.update(identity));
     }
 
-    @PostMapping("/register")
-    public Response<String> register(@Valid @RequestBody IdentityRegisterReq identityRegisterReq) {
+    @PostMapping("/preregister")
+    public Response<String> preregister(@Valid @RequestBody IdentityPreregisterReq identityPreregisterReq) {
         // Check existence.
-        Assert.isTrue(identityService.getByUsernameAndSource(identityRegisterReq.getUsername(), identityRegisterReq.getSource()).isEmpty(), () -> {
+        Assert.isTrue(identityService.getByUsernameAndSource(identityPreregisterReq.getUsername(), identityPreregisterReq.getSource()).isEmpty(), () -> {
             throw new BadRequestException(ErrorCode.EXIST, "Username exists.");
         });
 
         // Check group existence
-        Group group = groupService.getNormalById(identityRegisterReq.getGroupId()).orElseThrow(() -> {
-            throw new BadRequestException("Group does not exist.");
-        });
+        Group group = groupService.getNormalById(identityPreregisterReq.getGroupId()).orElseThrow(() ->
+                new BadRequestException("Group does not exist."));
 
         Identity identity = new Identity();
         identity.setUuid(UUID.randomUUID().toString());
-        identity.setUsername(identityRegisterReq.getUsername());
-        identity.setPassword(CryptoUtils.encodeByBCrypt(identityRegisterReq.getPassword()));
-        identity.setSource(identityRegisterReq.getSource());
+        identity.setUsername(identityPreregisterReq.getUsername());
+        identity.setPassword(CryptoUtils.encodeByBCrypt(identityPreregisterReq.getPassword()));
+        identity.setSource(identityPreregisterReq.getSource());
         identity.setGroup(group);
         identity.setStatus(IdentityStatus.NORMAL.getValue());
 

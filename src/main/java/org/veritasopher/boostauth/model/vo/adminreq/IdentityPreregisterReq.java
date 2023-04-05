@@ -8,7 +8,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
 @Data
-public class IdentityRegisterReq {
+public class IdentityPreregisterReq {
 
     @NotNull(message = "Username should not be null.")
     @Size(min = 6, max = 16, message = "Username should be between 6 - 16.")

@@ -1,16 +1,22 @@
+/**
+ * Preregistration admin page API
+ */
 const API = {
     getAllPreregistration: (pageable) => $.getJSON("/admin/identity/all/preregister", pageable),
     approveRegistration: (id) => $.post(`/admin/identity/approve/${id}`),
     rejectRegistration: (id) => $.post(`/admin/identity/reject/${id}`),
 }
 
-class Preregistration {
+/**
+ * Preregistration admin page script
+ */
+class PreregistrationAdminPage {
 
     constructor() {
         this.$table = $('#table');
     }
 
-    run() {
+    render() {
         this.#renderTable();
     }
 
@@ -129,6 +135,6 @@ class Preregistration {
 }
 
 (function () {
-    const preregistration = new Preregistration()
-    preregistration.run();
+    const preregistrationAdminPage = new PreregistrationAdminPage()
+    preregistrationAdminPage.render();
 })()
