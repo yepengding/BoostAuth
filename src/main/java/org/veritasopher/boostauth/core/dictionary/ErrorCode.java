@@ -9,7 +9,7 @@ import lombok.Getter;
  */
 public enum ErrorCode {
 
-    NOT_EXIST(-1000), EXIST(-1001), UNAUTHENTICATED(-1002), UNAUTHORIZED(-1003);
+    NOT_EXIST(-1000), EXIST(-1001), UNAUTHENTICATED(-1002), UNAUTHORIZED(-1003), INVALID(-1004);
 
     @Getter
     private final int value;

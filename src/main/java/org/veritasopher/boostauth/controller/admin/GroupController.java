@@ -1,5 +1,6 @@
 package org.veritasopher.boostauth.controller.admin;
 
+import com.google.gson.Gson;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 import org.veritasopher.boostauth.core.dictionary.ErrorCode;
@@ -13,6 +14,7 @@ import org.veritasopher.boostauth.model.vo.adminreq.GroupCreateReq;
 import org.veritasopher.boostauth.service.GroupService;
 import org.veritasopher.boostauth.service.IdentityService;
 import org.veritasopher.boostauth.utils.BeanUtils;
+import org.veritasopher.boostauth.utils.Validators;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -39,6 +41,9 @@ public class GroupController {
         Assert.isTrue(groupService.getByName(groupCreateReq.getName()).isEmpty(), () ->
                 new BadRequestException(ErrorCode.EXIST, "Group name has been used.")
         );
+
+        Assert.isTrue(Validators.isJSON(groupCreateReq.getPrivilege()), () ->
+                new BadRequestException(ErrorCode.INVALID, "Group privilege is invalid."));
 
         Group group = BeanUtils.copyBean(groupCreateReq, Group.class);
         group.setStatus(GroupStatus.NORMAL.getValue());
