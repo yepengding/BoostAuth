@@ -65,12 +65,17 @@ domain:9000/swagger-ui.html
 ## Frontend
 
 ### User
+
 - Preregistration: `/view/preregister`
+  ![Preregistration](docs/figures/preregistration.png)
 
 ### Admin
 
 - Manage preregistration: `/admin/view/manage/preregister`
+  ![Preregistration Admin](docs/figures/preregistration_admin.png)
+
 - Manage group: `/admin/view/manage/group`
+  ![Group Admin](docs/figures/group_admin.png)
 
 ---
 

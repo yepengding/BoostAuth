@@ -35,7 +35,7 @@ class PreregistrationAdminPage {
                         id: e.id,
                         username: e.username,
                         source: e.source,
-                        groupId: e.groupId
+                        groupId: e.group.id
                     })
                 });
                 params.success(tableData);
