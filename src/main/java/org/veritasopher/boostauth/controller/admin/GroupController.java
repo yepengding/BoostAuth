@@ -1,6 +1,5 @@
 package org.veritasopher.boostauth.controller.admin;
 
-import com.google.gson.Gson;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 import org.veritasopher.boostauth.core.dictionary.ErrorCode;
@@ -11,6 +10,7 @@ import org.veritasopher.boostauth.core.response.Response;
 import org.veritasopher.boostauth.model.Group;
 import org.veritasopher.boostauth.model.Identity;
 import org.veritasopher.boostauth.model.vo.adminreq.GroupCreateReq;
+import org.veritasopher.boostauth.model.vo.adminreq.GroupUpdateReq;
 import org.veritasopher.boostauth.service.GroupService;
 import org.veritasopher.boostauth.service.IdentityService;
 import org.veritasopher.boostauth.utils.BeanUtils;
@@ -49,6 +49,28 @@ public class GroupController {
         group.setStatus(GroupStatus.NORMAL.getValue());
 
         return Response.success(groupService.create(group));
+    }
+
+    @PostMapping("/update")
+    public Response<Group> update(@Valid @RequestBody GroupUpdateReq groupUpdateReq) {
+        Group group = groupService.getNormalById(groupUpdateReq.getId()).orElseThrow(() ->
+                new BadRequestException(ErrorCode.NOT_EXIST, "Group does not exist."));
+
+        // Update name if changed
+        if (!group.getName().equals(groupUpdateReq.getName())) {
+            Assert.isTrue(groupService.getByName(groupUpdateReq.getName()).isEmpty(), () ->
+                    new BadRequestException(ErrorCode.EXIST, "Group name has been used.")
+            );
+            group.setName(groupUpdateReq.getName());
+        }
+
+        group.setDescription(groupUpdateReq.getDescription());
+
+        Assert.isTrue(Validators.isJSON(groupUpdateReq.getPrivilege()), () ->
+                new BadRequestException(ErrorCode.INVALID, "Group privilege is invalid."));
+        group.setPrivilege(groupUpdateReq.getPrivilege());
+
+        return Response.success(groupService.update(group));
     }
 
     @GetMapping("/{id}")

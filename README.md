@@ -14,8 +14,9 @@ It supports multiple authentication methods with a built-in administration syste
 - [x] Management system with frontend
 - [x] Delegation support
 - [x] Email service
-- [x] Admin control
-- [x] Group control
+- [x] Admin management
+- [x] Group management
+- [x] Role-based access control
 - [x] Docker-based deployment
 - [x] Clients in multiple languages (e.g., Python, JavaScript, PHP)
 - [x] Integration with third-party services (e.g., Next Cloud)
