@@ -74,9 +74,17 @@ public class GroupController {
     }
 
     @GetMapping("/{id}")
+    public Response<Group> getGroup(@PathVariable("id") long id) {
+        Group group = groupService.getById(id).orElseThrow(() ->
+                new BadRequestException(ErrorCode.NOT_EXIST, "Group does not exist."));
+
+        return Response.success(group);
+    }
+
+    @GetMapping("/{id}/identities")
     public Response<List<Identity>> getGroupIdentities(@PathVariable("id") long id) {
         Assert.isTrue(groupService.getNormalById(id).isPresent(), () ->
-                new BadRequestException(ErrorCode.NOT_EXIST, "Group does not exist."));
+                new BadRequestException(ErrorCode.NOT_EXIST, "Group does not exist or has abnormal status."));
 
         return Response.success(identityService.getAllNormalByGroup(id));
     }
@@ -93,9 +101,7 @@ public class GroupController {
 
     @PostMapping("/enable/{id}")
     public Response<Group> enable(@PathVariable("id") Long id) {
-        Group group = groupService.getById(id).orElseThrow(() -> {
-            throw new BadRequestException(ErrorCode.NOT_EXIST, "Group does not exist.");
-        });
+        Group group = groupService.getById(id).orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXIST, "Group does not exist."));
         Assert.isTrue(GroupStatus.DISABLED.isTrue(group.getStatus()), () ->
                 new BadRequestException("Group has been enabled."));
 
@@ -109,9 +115,7 @@ public class GroupController {
             throw new BadRequestException("Default group (id: 1) cannot be disabled.");
         });
 
-        Group group = groupService.getNormalById(id).orElseThrow(() -> {
-            throw new BadRequestException(ErrorCode.NOT_EXIST, "Group does not exist or has been disabled.");
-        });
+        Group group = groupService.getNormalById(id).orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXIST, "Group does not exist or has been disabled."));
         group.setStatus(GroupStatus.DISABLED.getValue());
         return Response.success(groupService.update(group));
     }
@@ -122,9 +126,7 @@ public class GroupController {
             throw new BadRequestException("Default group (id: 1) cannot be deleted.");
         });
 
-        Group group = groupService.getById(id).orElseThrow(() -> {
-            throw new BadRequestException(ErrorCode.NOT_EXIST, "Group does not exist.");
-        });
+        Group group = groupService.getById(id).orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXIST, "Group does not exist."));
         return Response.success(groupService.delete(group));
     }
 
