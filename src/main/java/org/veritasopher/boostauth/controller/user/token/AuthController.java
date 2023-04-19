@@ -1,4 +1,4 @@
-package org.veritasopher.boostauth.controller.token;
+package org.veritasopher.boostauth.controller.user.token;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
