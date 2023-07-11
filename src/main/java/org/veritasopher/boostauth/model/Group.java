@@ -28,6 +28,9 @@ public class Group {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "uuid", unique = true)
+    private String uuid;
+
     @NotEmpty
     @Column(name = "name")
     private String name;

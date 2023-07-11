@@ -42,6 +42,16 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    public Optional<Group> getByUUID(String uuid) {
+        return groupRepository.findByUuid(uuid);
+    }
+
+    @Override
+    public Optional<Group> getNormalByUUID(String uuid) {
+        return groupRepository.findByUuidAndStatus(uuid, GroupStatus.NORMAL.getValue());
+    }
+
+    @Override
     public Optional<Group> getByName(String name) {
         return groupRepository.findByName(name);
     }

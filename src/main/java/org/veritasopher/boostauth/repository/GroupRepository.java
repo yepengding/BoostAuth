@@ -21,6 +21,10 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
 
     Optional<Group> findByIdAndStatusNot(long id, int status);
 
+    Optional<Group> findByUuid(String uuid);
+
+    Optional<Group> findByUuidAndStatus(String uuid, int status);
+
     Optional<Group> findByName(String name);
 
     Optional<Group> findByNameAndStatus(String name, int status);

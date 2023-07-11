@@ -22,6 +22,11 @@ public interface GroupService {
 
     Optional<Group> getNormalById(long id);
 
+    Optional<Group> getByUUID(String uuid);
+
+
+    Optional<Group> getNormalByUUID(String uuid);
+
     Optional<Group> getByName(String name);
 
     Group update(Group group);

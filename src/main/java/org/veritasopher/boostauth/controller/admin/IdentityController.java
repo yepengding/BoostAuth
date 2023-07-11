@@ -45,9 +45,7 @@ public class IdentityController {
 
     @PostMapping("/approve/{id}")
     public Response<Identity> approve(@PathVariable("id") Long id) {
-        Identity identity = identityService.getById(id).orElseThrow(() -> {
-            throw new BadRequestException(String.format("Preregistration record (%s) does not exist.", id));
-        });
+        Identity identity = identityService.getById(id).orElseThrow(() -> new BadRequestException(String.format("Preregistration record (%s) does not exist.", id)));
         Assert.isTrue(IdentityStatus.DELETED.isFalse(identity.getStatus()), () -> {
             throw new BadRequestException(String.format("Registration record (%s) has been deleted.", id));
         });
@@ -62,9 +60,7 @@ public class IdentityController {
 
     @PostMapping("/reject/{id}")
     public Response<Identity> reject(@PathVariable("id") Long id) {
-        Identity identity = identityService.getById(id).orElseThrow(() -> {
-            throw new BadRequestException(String.format("Preregistration record (%s) does not exist.", id));
-        });
+        Identity identity = identityService.getById(id).orElseThrow(() -> new BadRequestException(String.format("Preregistration record (%s) does not exist.", id)));
         Assert.isTrue(IdentityStatus.DELETED.isFalse(identity.getStatus()), () -> {
             throw new BadRequestException(String.format("Registration record (%s) has been deleted.", id));
         });

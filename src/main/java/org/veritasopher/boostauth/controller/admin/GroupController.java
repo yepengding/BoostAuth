@@ -19,6 +19,7 @@ import org.veritasopher.boostauth.utils.Validators;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Admin Group Controller
@@ -46,6 +47,7 @@ public class GroupController {
                 new BadRequestException(ErrorCode.INVALID, "Group privilege is invalid."));
 
         Group group = BeanUtils.copyBean(groupCreateReq, Group.class);
+        group.setUuid(UUID.randomUUID().toString());
         group.setStatus(GroupStatus.NORMAL.getValue());
 
         return Response.success(groupService.create(group));
