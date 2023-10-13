@@ -18,7 +18,7 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
-                .info(new Info().title("BoostAuth API").version("0.1.2").description("Auth system for Boost Plan."))
+                .info(new Info().title("BoostAuth API").version("0.1.5").description("Auth system for Boost Plan."))
                 .components(new Components().addSecuritySchemes("Authorization",
                         new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")));
     }

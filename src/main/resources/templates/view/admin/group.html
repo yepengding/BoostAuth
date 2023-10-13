@@ -13,41 +13,83 @@
 <body>
 
 <div class="container">
-    <div id="message-box" class="d-none">
-        <span id="message-content"></span>
-<!--        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>-->
-    </div>
     <div id="toolbar">
-        <button id="create-group" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        <button id="create-group" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#group-create-modal">
             <i class="bi bi-plus-lg"></i> Create
         </button>
     </div>
     <table id="table"></table>
+    <div id="message-box" class="d-none">
+        <span id="message-content"></span>
+    </div>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- Group Create Modal -->
+<div class="modal fade" id="group-create-modal" tabindex="-1" aria-labelledby="group-create-modal-label"
+     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Create Group</h5>
+                <h5 class="modal-title" id="group-create-modal-label">Create Group</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form>
                     <div class="form-group my-3">
-                        <label for="nameInput">Group Name</label>
-                        <input type="text" class="form-control" id="nameInput" placeholder="Please input the group name.">
+                        <label for="name-input">Group Name</label>
+                        <input type="text" class="form-control" id="name-input"
+                               placeholder="Please input the group name.">
                     </div>
 
                     <div class="form-group my-3">
-                        <label for="descriptionInput">Group Description</label>
-                        <input type="text" class="form-control" id="descriptionInput" placeholder="Please input the group description.">
+                        <label for="description-input">Group Description</label>
+                        <input type="text" class="form-control" id="description-input"
+                               placeholder="Please input the group description.">
+                    </div>
+
+                    <div class="form-group my-3">
+                        <label for="privilege-input">Group Privilege</label>
+                        <textarea class="form-control" id="privilege-input" rows="3"
+                                  placeholder="Please input the group privilege in JSON format."></textarea>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" id="create-btn" class="btn btn-primary">Create</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Group View Modal -->
+<div class="modal fade" id="group-view-modal" tabindex="-1" aria-labelledby="group-view-modal-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="group-view-modal-label"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group my-3">
+                        <label for="viewing-name-input">Group Name</label>
+                        <input type="text" class="form-control" id="viewing-name-input">
+                    </div>
+
+                    <div class="form-group my-3">
+                        <label for="viewing-description-input">Group Description</label>
+                        <input type="text" class="form-control" id="viewing-description-input">
+                    </div>
+
+                    <div class="form-group my-3">
+                        <label for="viewing-privilege-input">Group Privilege</label>
+                        <textarea class="form-control" id="viewing-privilege-input" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="update-btn" class="btn btn-primary">Update</button>
             </div>
         </div>
     </div>

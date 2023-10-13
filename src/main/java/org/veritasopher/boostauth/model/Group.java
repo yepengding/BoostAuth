@@ -11,6 +11,11 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 
+/**
+ * Group Entity
+ *
+ * @author Yepeng Ding
+ */
 @Entity
 @Table(name = "auth_group")
 @EntityListeners(AuditingEntityListener.class)
@@ -23,12 +28,18 @@ public class Group {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "uuid", unique = true)
+    private String uuid;
+
     @NotEmpty
     @Column(name = "name")
     private String name;
 
     @Column(name = "description")
     private String description;
+
+    @Column(name = "privilege", columnDefinition = "json")
+    private String privilege;
 
     @Column(name = "create_date")
     @CreatedDate

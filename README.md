@@ -14,8 +14,9 @@ It supports multiple authentication methods with a built-in administration syste
 - [x] Management system with frontend
 - [x] Delegation support
 - [x] Email service
-- [x] Admin control
-- [x] Group control
+- [x] Admin management
+- [x] Group management
+- [x] Role-based access control
 - [x] Docker-based deployment
 - [x] Clients in multiple languages (e.g., Python, JavaScript, PHP)
 - [x] Integration with third-party services (e.g., Next Cloud)
@@ -43,9 +44,27 @@ docker-compose up
 mvn clean package -D maven.test.skip=true -P [local/dev/prod]
 ```
 
+### Common Issues
+
+- Cannot connect to DB: wait until DB is fully initialized and restart web service
+
 ## API Document
 
 domain:9000/swagger-ui.html
+
+## Registration Workflow
+
+### Frontend
+
+1. `User`: access */view/preregister* to preregister
+2. `Admin`: access */admin/view/manage/preregister* to approve the preregistration
+3. Optionally, `User`: access an endpoint to officially register with a unique code issued by `Admin`
+
+### API
+
+1. `User`: call */token/auth/preregister* to preregister
+2. `Admin`: call */admin/identity/approve/{id}* to approve the preregistration
+3. Optionally, `User`: access an endpoint to officially register with a unique code issued by `Admin`
 
 ## Basic Access Authentication
 
@@ -63,10 +82,18 @@ domain:9000/swagger-ui.html
 
 ## Frontend
 
+### User
+
+- Preregistration: */view/preregister*
+  ![Preregistration](docs/figures/preregistration.png)
+
 ### Admin
 
-- Manage preregistration: `/admin/view/manage/preregister`
-- Manage group: `/admin/view/manage/group`
+- Manage preregistration: */admin/view/manage/preregister*
+  ![Preregistration Admin](docs/figures/preregistration_admin.png)
+
+- Manage group: */admin/view/manage/group*
+  ![Group Admin](docs/figures/group_admin.png)
 
 ---
 

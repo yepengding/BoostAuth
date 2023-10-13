@@ -1,3 +1,7 @@
+const SYSTEM = {
+    ID: "default_auth_gui"
+}
+
 const CODE = {
     SUCCESS: 200,
     FAILURE: -1

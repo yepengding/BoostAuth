@@ -10,13 +10,16 @@ import org.veritasopher.boostauth.core.response.Response;
 import org.veritasopher.boostauth.model.Group;
 import org.veritasopher.boostauth.model.Identity;
 import org.veritasopher.boostauth.model.vo.adminreq.GroupCreateReq;
+import org.veritasopher.boostauth.model.vo.adminreq.GroupUpdateReq;
 import org.veritasopher.boostauth.service.GroupService;
 import org.veritasopher.boostauth.service.IdentityService;
 import org.veritasopher.boostauth.utils.BeanUtils;
+import org.veritasopher.boostauth.utils.Validators;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Admin Group Controller
@@ -40,16 +43,50 @@ public class GroupController {
                 new BadRequestException(ErrorCode.EXIST, "Group name has been used.")
         );
 
+        Assert.isTrue(Validators.isJSON(groupCreateReq.getPrivilege()), () ->
+                new BadRequestException(ErrorCode.INVALID, "Group privilege is invalid."));
+
         Group group = BeanUtils.copyBean(groupCreateReq, Group.class);
+        group.setUuid(UUID.randomUUID().toString());
         group.setStatus(GroupStatus.NORMAL.getValue());
 
         return Response.success(groupService.create(group));
     }
 
+    @PostMapping("/update")
+    public Response<Group> update(@Valid @RequestBody GroupUpdateReq groupUpdateReq) {
+        Group group = groupService.getNormalById(groupUpdateReq.getId()).orElseThrow(() ->
+                new BadRequestException(ErrorCode.NOT_EXIST, "Group does not exist."));
+
+        // Update name if changed
+        if (!group.getName().equals(groupUpdateReq.getName())) {
+            Assert.isTrue(groupService.getByName(groupUpdateReq.getName()).isEmpty(), () ->
+                    new BadRequestException(ErrorCode.EXIST, "Group name has been used.")
+            );
+            group.setName(groupUpdateReq.getName());
+        }
+
+        group.setDescription(groupUpdateReq.getDescription());
+
+        Assert.isTrue(Validators.isJSON(groupUpdateReq.getPrivilege()), () ->
+                new BadRequestException(ErrorCode.INVALID, "Group privilege is invalid."));
+        group.setPrivilege(groupUpdateReq.getPrivilege());
+
+        return Response.success(groupService.update(group));
+    }
+
     @GetMapping("/{id}")
+    public Response<Group> getGroup(@PathVariable("id") long id) {
+        Group group = groupService.getById(id).orElseThrow(() ->
+                new BadRequestException(ErrorCode.NOT_EXIST, "Group does not exist."));
+
+        return Response.success(group);
+    }
+
+    @GetMapping("/{id}/identities")
     public Response<List<Identity>> getGroupIdentities(@PathVariable("id") long id) {
         Assert.isTrue(groupService.getNormalById(id).isPresent(), () ->
-                new BadRequestException(ErrorCode.NOT_EXIST, "Group does not exist."));
+                new BadRequestException(ErrorCode.NOT_EXIST, "Group does not exist or has abnormal status."));
 
         return Response.success(identityService.getAllNormalByGroup(id));
     }
@@ -66,9 +103,7 @@ public class GroupController {
 
     @PostMapping("/enable/{id}")
     public Response<Group> enable(@PathVariable("id") Long id) {
-        Group group = groupService.getById(id).orElseThrow(() -> {
-            throw new BadRequestException(ErrorCode.NOT_EXIST, "Group does not exist.");
-        });
+        Group group = groupService.getById(id).orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXIST, "Group does not exist."));
         Assert.isTrue(GroupStatus.DISABLED.isTrue(group.getStatus()), () ->
                 new BadRequestException("Group has been enabled."));
 
@@ -82,9 +117,7 @@ public class GroupController {
             throw new BadRequestException("Default group (id: 1) cannot be disabled.");
         });
 
-        Group group = groupService.getNormalById(id).orElseThrow(() -> {
-            throw new BadRequestException(ErrorCode.NOT_EXIST, "Group does not exist or has been disabled.");
-        });
+        Group group = groupService.getNormalById(id).orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXIST, "Group does not exist or has been disabled."));
         group.setStatus(GroupStatus.DISABLED.getValue());
         return Response.success(groupService.update(group));
     }
@@ -95,9 +128,7 @@ public class GroupController {
             throw new BadRequestException("Default group (id: 1) cannot be deleted.");
         });
 
-        Group group = groupService.getById(id).orElseThrow(() -> {
-            throw new BadRequestException(ErrorCode.NOT_EXIST, "Group does not exist.");
-        });
+        Group group = groupService.getById(id).orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXIST, "Group does not exist."));
         return Response.success(groupService.delete(group));
     }
 

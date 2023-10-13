@@ -2,18 +2,19 @@ package org.veritasopher.boostauth.model.vo.adminreq;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 /**
- * Group Create Request
+ * Group Update Request
  *
  * @author Yepeng Ding
  */
 @Data
-public class GroupCreateReq {
+public class GroupUpdateReq {
+
+    @NotNull(message = "Group ID should not be null.")
+    @Min(value = 1, message = "Group ID is invalid")
+    private Long id;
 
     @NotNull(message = "Name should not be null.")
     @Size(min = 1, max = 55, message = "Name should be between 1 - 55.")

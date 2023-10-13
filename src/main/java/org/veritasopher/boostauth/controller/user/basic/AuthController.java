@@ -1,4 +1,4 @@
-package org.veritasopher.boostauth.controller.basic;
+package org.veritasopher.boostauth.controller.user.basic;
 
 import com.sun.jdi.InternalException;
 import io.swagger.v3.oas.annotations.tags.Tag;

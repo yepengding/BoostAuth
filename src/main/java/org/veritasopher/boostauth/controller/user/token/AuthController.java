@@ -1,4 +1,4 @@
-package org.veritasopher.boostauth.controller.token;
+package org.veritasopher.boostauth.controller.user.token;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -62,9 +62,7 @@ public class AuthController {
      */
     @PostMapping("/login")
     public Response<String> login(@Valid @RequestBody AuthLogin authLogin) {
-        Identity identity = identityService.getByUsernameAndSource(authLogin.getUsername(), authLogin.getSource()).orElseThrow(() -> {
-            throw new AuthenticationException(ErrorCode.NOT_EXIST, String.format("Username (%s) does not exist.", authLogin.getUsername()));
-        });
+        Identity identity = identityService.getByUsernameAndSource(authLogin.getUsername(), authLogin.getSource()).orElseThrow(() -> new AuthenticationException(ErrorCode.NOT_EXIST, String.format("Username (%s) does not exist.", authLogin.getUsername())));
 
         // Identity should be at normal status
         Assert.isTrue(IdentityStatus.NORMAL.isTrue(identity.getStatus()), () -> {
@@ -116,9 +114,7 @@ public class AuthController {
         });
 
         // Check group existence
-        Group group = groupService.getNormalById(authPreregister.getGroupId()).orElseThrow(() -> {
-            throw new BadRequestException("Group does not exist.");
-        });
+        Group group = groupService.getNormalById(authPreregister.getGroupId()).orElseThrow(() -> new BadRequestException("Group does not exist."));
 
         Identity identity = new Identity();
         identity.setUuid(UUID.randomUUID().toString());
@@ -146,9 +142,7 @@ public class AuthController {
      */
     @PostMapping("/register")
     public Response<String> register(@Valid @RequestBody AuthRegister authRegister) {
-        Identity identity = identityService.getByUuid(authRegister.getUuid()).orElseThrow(() -> {
-            throw new AuthenticationException(ErrorCode.NOT_EXIST, "Register failed because identity does not exist.");
-        });
+        Identity identity = identityService.getByUuid(authRegister.getUuid()).orElseThrow(() -> new AuthenticationException(ErrorCode.NOT_EXIST, "Register failed because identity does not exist."));
 
         // Identity should be at preregister status
         Assert.isTrue(IdentityStatus.PREREGISTER.isTrue(identity.getStatus()), () -> {
@@ -169,9 +163,7 @@ public class AuthController {
     @Operation(security = @SecurityRequirement(name = "Authorization"))
     @PostMapping("/logout")
     public Response<String> logout(@Valid @RequestBody AuthLogout authLogout) {
-        Token token = tokenService.getByContent(authLogout.getToken()).orElseThrow(() -> {
-            throw new AuthenticationException(ErrorCode.NOT_EXIST, "Token does not exist.");
-        });
+        Token token = tokenService.getByContent(authLogout.getToken()).orElseThrow(() -> new AuthenticationException(ErrorCode.NOT_EXIST, "Token does not exist."));
 
         token.setContent(null);
         token.setStatus(TokenStatus.INVALID.getValue());
@@ -187,9 +179,7 @@ public class AuthController {
      */
     @PostMapping("/reset/password")
     public Response<String> resetPwd(@Valid @RequestBody AuthResetPwd authResetPwd) {
-        Identity identity = identityService.getByUuid(authResetPwd.getUuid()).orElseThrow(() -> {
-            throw new AuthenticationException(ErrorCode.NOT_EXIST, "Identity does not exist.");
-        });
+        Identity identity = identityService.getByUuid(authResetPwd.getUuid()).orElseThrow(() -> new AuthenticationException(ErrorCode.NOT_EXIST, "Identity does not exist."));
 
         // Identity should be at normal status
         Assert.isTrue(IdentityStatus.NORMAL.isTrue(identity.getStatus()), () -> {

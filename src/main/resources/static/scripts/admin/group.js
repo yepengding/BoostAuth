@@ -1,33 +1,64 @@
+/**
+ * Group admin page API
+ */
 const API = {
     getAllGroup: () => $.getJSON("/admin/group/all"),
-    createGroup: (group) => $.ajax("/admin/group/create", {
+    getGroup: (id) => $.getJSON(`/admin/group/${id}`),
+    createGroup: (id, groupCreate) => $.ajax("/admin/group/create", {
         type: 'POST',
         contentType: 'application/json',
-        data: JSON.stringify(group),
+        data: JSON.stringify(groupCreate),
+    }),
+    updateGroup: (groupUpdate) => $.ajax("/admin/group/update", {
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(groupUpdate),
     }),
     enableGroup: (id) => $.post(`/admin/group/enable/${id}`),
     disableGroup: (id) => $.post(`/admin/group/disable/${id}`),
     deleteGroup: (id) => $.post(`/admin/group/delete/${id}`),
 }
 
+/**
+ * Group constants
+ * @type {{DISABLED: number, ENABLED: number, DELETED: number}}
+ */
 const GROUP_STATUS = {
     ENABLED: 1,
     DISABLED: 0,
     DELETED: -1
 }
 
+/**
+ * Group models
+ */
 class GroupCreate {
 
-    constructor(name, description) {
+    constructor(name, description, privilege) {
         this.name = name;
         this.description = description;
+        this.privilege = privilege;
     }
 }
 
+class GroupUpdate {
+
+    constructor(id, name, description, privilege) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.privilege = privilege;
+    }
+}
+
+/**
+ * Group events
+ */
 $("#create-btn").click(() => {
     API.createGroup(new GroupCreate(
-        $('#nameInput').val(),
-        $('#descriptionInput').val(),
+        $('#name-input').val(),
+        $('#description-input').val(),
+        $('#privilege-input').val(),
     )).done(d => {
         Assert.isTrue(d.code === CODE.SUCCESS, () => Message.failure(d.message));
         Message.success("Created successfully.");
@@ -35,7 +66,8 @@ $("#create-btn").click(() => {
         $('#table').bootstrapTable('append', [{
             id: data.id,
             name: data.name,
-            description: data.description
+            description: data.description,
+            status: data.status
         }])
     }).fail(e => {
         Message.failure(e.responseJSON.message);
@@ -43,13 +75,40 @@ $("#create-btn").click(() => {
     })
 })
 
-class Group {
+$("#update-btn").click(() => {
+    API.updateGroup(new GroupUpdate(
+        Number($('#group-view-modal-label').text()),
+        $('#viewing-name-input').val(),
+        $('#viewing-description-input').val(),
+        $('#viewing-privilege-input').val(),
+    )).done(d => {
+        Assert.isTrue(d.code === CODE.SUCCESS, () => Message.failure(d.message));
+        Message.success("Updated successfully.");
+        const data = d.data;
+        $('#table').bootstrapTable('updateByUniqueId', {
+            id: data.id,
+            row: {
+                name: data.name,
+                description: data.description,
+            }
+        })
+    }).fail(e => {
+        Message.failure(e.responseJSON.message);
+        console.error(e.responseJSON.message);
+    })
+})
+
+
+/**
+ * Group admin page script
+ */
+class GroupAdminPage {
 
     constructor() {
         this.$table = $('#table');
     }
 
-    run() {
+    render() {
         this.#renderTable();
         this.#setAllGroup();
     }
@@ -75,6 +134,11 @@ class Group {
 
     #renderTable() {
         const operateFormatter = (value, row, index) => {
+            const viewBtn =
+                `<button type="button" id="view" class="mx-2 btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#group-view-modal">` +
+                '<i class="bi bi-eye"></i>' +
+                '</button>';
+
             const enableBtn =
                 `<button type="button" id="enable" class="mx-2 btn btn-outline-primary" ${row.status === GROUP_STATUS.DISABLED ? '' : 'disabled'}>` +
                 '<i class="bi bi-power"></i>' +
@@ -89,10 +153,29 @@ class Group {
                 '<button type="button" id="delete" class="mx-2 btn btn-outline-danger">' +
                 '<i class="bi bi-trash-fill"></i>' +
                 '</button>'
-            return [enableBtn, disableBtn, deleteBtn].join('');
+            return [viewBtn, enableBtn, disableBtn, deleteBtn].join('');
         }
 
         window.operateEvents = {
+            'click #view': function (e, value, row, index) {
+                const setFailureView = () => {
+                    Message.failure(`Failed to get group (${row.id}).`);
+                };
+
+                API.getGroup(row.id)
+                    .done((d) => {
+                        Assert.isTrue(d.code === CODE.SUCCESS, setFailureView);
+                        const data = d.data;
+                        $('#group-view-modal-label').text(data.id);
+                        $('#viewing-name-input').val(data.name);
+                        $('#viewing-description-input').val(data.description);
+                        $('#viewing-privilege-input').val(data.privilege);
+                    })
+                    .fail(e => {
+                        setFailureView();
+                        console.error(e.responseJSON.message);
+                    });
+            },
             'click #enable': function (e, value, row, index) {
                 $('#enable').prop('disabled', true);
                 $('#disable').prop('disabled', true);
@@ -190,6 +273,7 @@ class Group {
             search: true,
             pagination: true,
             pageSize: 20,
+            uniqueId: "id",
             columns: [{
                 field: 'id',
                 title: 'ID',
@@ -218,6 +302,6 @@ class Group {
 
 
 (function () {
-    const group = new Group()
-    group.run();
+    const groupAdminPage = new GroupAdminPage()
+    groupAdminPage.render();
 })()
