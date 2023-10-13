@@ -44,9 +44,27 @@ docker-compose up
 mvn clean package -D maven.test.skip=true -P [local/dev/prod]
 ```
 
+### Common Issues
+
+- Cannot connect to DB: wait until DB is fully initialized and restart web service
+
 ## API Document
 
 domain:9000/swagger-ui.html
+
+## Registration Workflow
+
+### Frontend
+
+1. `User`: access */view/preregister* to preregister
+2. `Admin`: access */admin/view/manage/preregister* to approve the preregistration
+3. Optionally, `User`: access an endpoint to officially register with a unique code issued by `Admin`
+
+### API
+
+1. `User`: call */token/auth/preregister* to preregister
+2. `Admin`: call */admin/identity/approve/{id}* to approve the preregistration
+3. Optionally, `User`: access an endpoint to officially register with a unique code issued by `Admin`
 
 ## Basic Access Authentication
 
@@ -66,15 +84,15 @@ domain:9000/swagger-ui.html
 
 ### User
 
-- Preregistration: `/view/preregister`
+- Preregistration: */view/preregister*
   ![Preregistration](docs/figures/preregistration.png)
 
 ### Admin
 
-- Manage preregistration: `/admin/view/manage/preregister`
+- Manage preregistration: */admin/view/manage/preregister*
   ![Preregistration Admin](docs/figures/preregistration_admin.png)
 
-- Manage group: `/admin/view/manage/group`
+- Manage group: */admin/view/manage/group*
   ![Group Admin](docs/figures/group_admin.png)
 
 ---
