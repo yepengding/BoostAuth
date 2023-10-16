@@ -4,7 +4,7 @@
 const API = {
     getAllGroup: () => $.getJSON("/admin/group/all"),
     getGroup: (id) => $.getJSON(`/admin/group/${id}`),
-    createGroup: (id, groupCreate) => $.ajax("/admin/group/create", {
+    createGroup: (groupCreate) => $.ajax("/admin/group/create", {
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(groupCreate),
